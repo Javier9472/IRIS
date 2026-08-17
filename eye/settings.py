@@ -135,3 +135,49 @@ MEDIA_ROOT = os.path.join(
     BASE_DIR,
     'media'
 )
+
+# ============================================================
+# LOGGING
+# ============================================================
+# Todo lo que antes eran print() sueltos ahora pasa por acá.
+# - iris.log: eventos técnicos (cámaras, errores del modelo, etc.)
+# - consola: mismo contenido mientras desarrollas con runserver
+
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGS_DIR, 'iris.log'),
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB por archivo
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'users': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}

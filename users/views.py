@@ -5,6 +5,7 @@ import uuid
 import time
 import cv2
 import os
+import logging
 import subprocess
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -23,7 +24,10 @@ from .forms import (
 
 from .models import Camera, CameraImage, Alerta
 
+import torch
 from ultralytics import YOLO
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================
@@ -32,7 +36,12 @@ from ultralytics import YOLO
 
 model = YOLO("runs/detect/train27/weights/best.pt")
 
-DEVICE = "cpu"
+# Antes estaba fijo en "cpu". Si hay GPU disponible (CUDA), la usamos:
+# la inferencia por frame es varias veces más rápida, lo que importa
+# mucho en un stream en vivo.
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+logger.info(f"IRIS: modelo cargado, usando dispositivo '{DEVICE}'")
 
 last_capture_times = {}
 
@@ -416,10 +425,7 @@ def generar_stream(
             + ':8080/video'
         )
 
-    print(
-        'Fuente de cámara:',
-        fuente
-    )
+    logger.info(f"Cámara {camara_id}: abriendo fuente '{fuente}'")
 
     cap = cv2.VideoCapture(
         fuente
@@ -427,10 +433,7 @@ def generar_stream(
 
     if not cap.isOpened():
 
-        print(
-            'No se pudo abrir la cámara:',
-            fuente
-        )
+        logger.error(f"Cámara {camara_id}: no se pudo abrir la fuente '{fuente}'")
 
         return
 

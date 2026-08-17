@@ -1,0 +1,20 @@
+Django>=5.2,<6.0
+ultralytics>=8.3
+opencv-python>=4.9
+Pillow>=10.0
+
+# --- IMPORTANTE sobre la GPU en Windows ---
+# `ultralytics` instala una versión de PyTorch por defecto que en Windows
+# suele venir SIN soporte CUDA (solo CPU), aunque tengas GPU NVIDIA.
+# Si `torch.cuda.is_available()` te da False a pesar de tener GPU,
+# reinstala torch con la build de CUDA correcta para tu tarjeta, por ej.:
+#
+#   pip uninstall torch
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+#
+# (revisa en https://pytorch.org/get-started/locally/ cuál versión de CUDA
+# corresponde a tu driver/GPU antes de instalar).
+
+# --- Requisito de sistema, no de pip ---
+# `ffmpeg` debe estar instalado y disponible en el PATH de Windows
+# (se usa en reencode_to_h264 para convertir video de prueba a H.264).
