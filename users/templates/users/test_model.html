@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test del Modelo</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="inter-font">
+
+    <div class="nap">
+            <img src="{% static 'img/logo.png' %}" alt="">
+    </div>
+
+    <div class="test-div">
+        <h1>Testear modelo YOLO</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="archivo" accept="image/*,video/*" required>
+            <button type="submit">Procesar</button>
+        </form>
+
+        {% if original_url and resultado_url %}
+        <div style="display: flex; gap: 2rem; margin-top: 2rem;">
+            <div>
+                <h3>Original</h3>
+                {% if es_video %}
+                    <video width="720" controls>
+                        <source src="{{ original_url }}" type="video/mp4">
+                    </video>
+                {% else %}
+                    <img src="{{ original_url }}" width="720">
+                {% endif %}
+            </div>
+            <div>
+                <h3>Procesado</h3>
+                {% if es_video %}
+                    <video width="720" controls>
+                        <source src="{{ resultado_url }}" type="video/mp4">
+                    </video>
+                {% else %}
+                    <img src="{{ resultado_url }}" width="720" type="video/mp4">
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'home' %}" class="cam-add">←</a>
+    
+</body>
+</html>

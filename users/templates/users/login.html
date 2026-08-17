@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iniciar sesión | Iris</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="inter-font">
+
+    <main class="main-div-log">
+
+        <!-- PANEL DE BIENVENIDA -->
+        <section class="welcome-div">
+
+            <img
+                src="{% static 'img/logo.png' %}"
+                alt="Logo de Iris"
+            >
+
+            <h1>Bienvenido</h1>
+
+            <h2>
+                Regístrate para acceder a la forma más inteligente
+                de seguridad.
+            </h2>
+
+            <a href="{% url 'register' %}">
+                <button type="button">
+                    Registrate
+                </button>
+            </a>
+
+        </section>
+
+
+        <!-- PANEL DE LOGIN -->
+        <section class="login-div">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <h1>Iniciar sesión</h1>
+
+                <!-- USUARIO -->
+                <div class="info-box">
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Usuario"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <!-- CONTRASEÑA -->
+                <div class="info-box">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <!-- BOTÓN -->
+                <div class="container-btn">
+                    <button
+                        type="submit"
+                        class="btn"
+                    >
+                        Iniciar sesión
+                    </button>
+                </div>
+
+                <!-- OLVIDÉ MI CONTRASEÑA -->
+                <small>
+                    Olvidé mi contraseña
+                </small>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

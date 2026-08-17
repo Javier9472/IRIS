@@ -1,0 +1,15 @@
+# .conda/
+env/
+venv/
+ENV/ 
+*.conda
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.env.local
+*.pem
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

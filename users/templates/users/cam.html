@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="inter-font">
+        <div class="nap">
+            <img src="{% static 'img/logo.png' %}" alt="">
+        </div>
+        <div class="cam"> 
+            <div class="video">
+                <title>Stream de {{ camara.nombre }}</title>
+                <div class="cam-cont">
+                    <img src="{% url 'video_feed' camara.id %}" width="1000" height="720">
+                </div>
+            </div>
+
+            <div class="settings">
+                <form method="post">
+                {% csrf_token %}
+                <label>Nombre:</label>
+                {{ form.nombre }}
+                
+                <label>IP:</label>
+                {{ form.ip }}
+                
+                <label>Intervalo de Captura (s):</label>
+                {{ form.intervalo_captura }}
+
+                <label>Certeza Mínima (0.0 - 1.0):</label>
+                {{ form.certeza_minima }}
+
+                <button type="submit">Guardar</button>
+            </form>
+
+                <textarea name="ultima alerta" readonly>
+                    {% for alerta in alertas %}
+                        {{ alerta.fecha_deteccion }} - {{ alerta.tipo_deteccion }}
+                    {% endfor %}
+                </textarea>
+            </div>
+        </div>
+
+        <a href="{% url 'home' %}" class="cam-add" id="back">←</a>
+        <a href="{% url 'ver_alertas' camara.id%}" class="cam-add">📷</a>
+
+</body>
+</html>

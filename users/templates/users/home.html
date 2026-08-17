@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="inter-font">
+        <div class="nap">
+            <img src="{% static 'img/logo.png' %}" alt="">
+        </div>
+        <div class="home"> 
+        <div class="left-div">
+        </div>
+
+        <div class="cameras">
+            <h1>Mis camaras</h1>
+            <div class="card-cont">
+                {% if camaras %}
+                    {% for camara in camaras %}
+                    <div class="camara-card">
+                        <h3>{{ camara.nombre }}</h3>
+                        <p><strong>IP:</strong> {{ camara.ip }}</p>
+                        <p><strong>Creada:</strong> {{ camara.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                        <a href="{% url 'galeria_camara' camara.id %}">📷 Ver camara</a>
+                        <a href="{% url 'ver_alertas' camara.id%}">📷 Ver galería</a>
+                        <a href="{% url 'eliminar_camara' camara.id %}" 
+                            onclick="return confirm('¿Eliminar esta cámara?');">🗑️ Eliminar
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No tienes cámaras registradas.</p>
+                {% endif %}
+            </div>
+            
+        </div>
+    </div>
+    <a href="{% url 'nueva_camara' %}" class="cam-add">➕</a>
+    <a href="{% url 'test_modelo' %}" class="cam-add" id="back">👩‍🔬</a>
+</body>
+</html>

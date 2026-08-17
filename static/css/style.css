@@ -1,0 +1,1112 @@
+/* =========================================================
+   RESET / BASE
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --yellow: #ffcc00;
+    --yellow-dark: #e7c544;
+    --red: #c40707;
+    --red-dark: #a80505;
+    --black: #080808;
+    --black-soft: #111111;
+    --white: #ffffff;
+    --gray: #a6a6a6;
+    --skyblue: #34a8e7;
+    --border: rgba(255, 222, 89, 0.22);
+    --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    --radius: 18px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Inter", sans-serif;
+    background: var(--black);
+    color: var(--white);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    border: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.inter-font {
+    font-family: "Inter", sans-serif;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.main-div-log {
+    min-height: 100vh;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+
+/* ---------- WELCOME ---------- */
+
+.welcome-div {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(255, 222, 89, 0.15),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            var(--white),
+            var(--white)
+        );
+
+    padding: 4rem clamp(2rem, 7vw, 8rem);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-div::after {
+    content: "";
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: rgba(255, 222, 89, 0.08);
+    right: -120px;
+    bottom: -120px;
+}
+
+.welcome-div img {
+    width: 110px;
+    margin-bottom: 4rem;
+    object-fit: contain;
+}
+
+.welcome-div h1 {
+    color: var(--black);
+    font-size: clamp(4rem, 7vw, 7.5rem);
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    margin-bottom: 2rem;
+}
+
+.welcome-div h2 {
+    max-width: 600px;
+    color: rgba(0, 0, 0, 0.92);
+    font-size: clamp(1.1rem, 1.8vw, 1.7rem);
+    line-height: 1.5;
+    font-weight: 500;
+    margin-bottom: 2.5rem;
+}
+
+.welcome-div button {
+    min-width: 190px;
+    padding: 0.95rem 1.8rem;
+
+    background-color: skyblue;
+    color: var(--black);
+
+    font-size: 1.05rem;
+    font-weight: 800;
+
+    border-radius: 999px;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.welcome-div button:hover {
+    background-color: #ffe77d;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ---------- LOGIN FORM ---------- */
+
+.login-div {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255, 222, 89, 0.18),
+            transparent 30%
+        ),
+        var(--yellow);
+
+    padding: 3rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-div > div,
+.login-div > form,
+.login-div > small {
+    width: min(100%, 430px);
+}
+
+.login-div h1 {
+    color: var(--black);
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 2.5rem;
+}
+
+.login-div form {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-box {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.login-div input {
+    width: 100%;
+    height: 58px;
+
+    padding: 0 1.25rem;
+
+    border: 2px solid transparent;
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--black);
+
+    font-size: 1rem;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.login-div input::placeholder {
+    color: #777;
+}
+
+.login-div input:focus {
+    border-color: var(--black);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.container-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.login-div button {
+    width: 100%;
+    height: 58px;
+
+    border-radius: 14px;
+
+    background-color: var(--black);
+    color: var(--yellow);
+
+    font-size: 1.05rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-div button:hover {
+    background-color: #1d1d1d;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.login-div {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255, 222, 89, 0.18),
+            transparent 30%
+        ),
+        var(--skyblue);
+
+    padding: 3rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* FORMULARIO COMPLETO */
+
+.login-div form {
+    width: min(100%, 430px);
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* TÍTULO */
+
+.login-div h1 {
+    color: var(--black);
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    
+    margin-bottom: 2.5rem;
+}
+
+
+/* INPUTS */
+
+.info-box {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.login-div input {
+    width: 100%;
+    height: 58px;
+
+    padding: 0 1.25rem;
+
+    border: 2px solid transparent;
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--black);
+
+    font-size: 1rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.login-div input::placeholder {
+    color: #777;
+}
+
+.login-div input:focus {
+    border-color: var(--black);
+
+    box-shadow:
+        0 0 0 4px rgba(0, 0, 0, 0.08);
+
+    transform: translateY(-1px);
+}
+
+
+/* BOTÓN */
+
+.container-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.login-div button {
+    width: 100%;
+    height: 58px;
+
+    border-radius: 14px;
+
+    background-color: var(--black);
+    color: var(--white);
+
+    font-size: 1.05rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-div button:hover {
+    background-color: #1d1d1d;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+
+/* OLVIDÉ MI CONTRASEÑA */
+
+.login-div small {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 1rem;
+    padding-left: 0.25rem;
+
+    color: rgba(0, 0, 0, 0.7);
+
+    font-size: 0.9rem;
+
+    text-align: left;
+
+    text-decoration: underline;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.nap {
+    width: 100%;
+    height: 80px;
+
+    padding: 0 2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: var(--white);
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nap img {
+    width: 55px;
+    height: auto;
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+.home {
+    min-height: calc(100vh - 80px);
+
+    display: grid;
+    grid-template-columns: 38% 62%;
+
+    background: var(--black);
+}
+
+.left-div {
+    min-height: 100%;
+    background-image:
+        linear-gradient(
+            to bottom,
+            #34a8e7,
+            #4a23d5
+        ),
+        url("../img/CCTV Security.jpg");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.cameras {
+    min-width: 0;
+    padding: 3.5rem;
+    background: linear-gradient(
+            to bottom,
+            #34a8e7,
+            #4a23d5
+        );
+    overflow-y: auto;
+}
+
+.cameras h1 {
+    margin-bottom: 2.5rem;
+    color: #000000;
+    font-size: clamp(2.5rem, 5vw, 5.5rem);
+    line-height: 1;
+    font-weight: 800;
+
+    letter-spacing: -0.06em;
+}
+
+.card-cont {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.camara-card {
+    padding: 1.5rem;
+
+    background:
+        linear-gradient(
+            145deg,
+            #34a8e7,
+            #4a23d5
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius);
+
+    color: var(--black);
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.camara-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.45);
+}
+
+.camara-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.camara-card p {
+    margin: 0.35rem 0;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.camara-card a {
+    display: inline-flex;
+    margin-top: 1rem;
+
+    color: var(--black);
+
+    font-weight: 700;
+
+    transition: opacity 0.2s ease;
+}
+
+.camara-card a:hover {
+    opacity: 0.65;
+}
+
+
+/* ---------- ADD CAMERA BUTTON ---------- */
+
+.add-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.8rem 1.2rem;
+
+    background-color: var(--yellow);
+    color: var(--black);
+
+    border-radius: 12px;
+
+    font-weight: 700;
+}
+
+.add-button:hover {
+    background-color: #ffe77d;
+}
+
+.cam-add {
+    position: fixed;
+
+    right: 2rem;
+    bottom: 2rem;
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color: var(--yellow);
+    color: var(--black);
+
+    font-size: 2rem;
+    font-weight: 600;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+    z-index: 50;
+}
+
+.cam-add:hover {
+    transform: scale(1.08);
+    background-color: #ffe77d;
+}
+
+
+/* =========================================================
+   NUEVA CÁMARA
+========================================================= */
+
+.cam-add-main {
+    min-height: calc(100vh - 80px);
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 2rem;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #1a1a1a,
+            var(--black) 70%
+        );
+}
+
+.form-container {
+    width: min(100%, 600px);
+
+    padding: 2.5rem;
+
+    background: #151515;
+
+    border: 1px solid var(--border);
+    border-radius: 22px;
+
+    box-shadow: var(--shadow);
+}
+
+.form-container h2 {
+    margin-bottom: 2rem;
+
+    color: var(--yellow);
+
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container label {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+
+    color: #ddd;
+
+    font-weight: 600;
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+    width: 100%;
+
+    padding: 0.95rem 1rem;
+
+    background: #fff;
+    color: var(--black);
+
+    border: 2px solid transparent;
+    border-radius: 12px;
+
+    outline: none;
+
+    transition: border-color 0.2s ease;
+}
+
+.form-container input:focus,
+.form-container textarea:focus,
+.form-container select:focus {
+    border-color: var(--yellow);
+}
+
+.form-container button {
+    width: 100%;
+
+    margin-top: 1.5rem;
+    padding: 0.95rem;
+
+    background: var(--yellow);
+    color: var(--black);
+
+    border-radius: 12px;
+
+    font-size: 1rem;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background: #ffe77d;
+}
+
+.form-container a {
+    display: block;
+
+    margin-top: 1rem;
+
+    text-align: center;
+
+    color: var(--yellow);
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CAM
+========================================================= */
+
+.cam {
+    min-height: calc(100vh - 80px);
+
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+
+    background: var(--black);
+
+    overflow: hidden;
+}
+
+.video {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 2rem;
+}
+
+.cam-cont {
+    width: 100%;
+    max-width: 900px;
+}
+
+.cam-cont img {
+    width: 100%;
+    max-height: 75vh;
+
+    object-fit: contain;
+
+    border: 2px solid var(--yellow);
+    border-radius: 20px;
+
+    box-shadow: var(--shadow);
+}
+
+.settings {
+    min-width: 0;
+
+    padding: 3rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    color: var(--yellow);
+
+    border-left: 1px solid var(--border);
+}
+
+.settings h1,
+.settings h2 {
+    margin-bottom: 1.5rem;
+}
+
+.settings form {
+    width: min(100%, 500px);
+    display: flex;
+    flex-direction: column;
+}
+
+.settings label {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+
+    color: #ddd;
+    font-weight: 600;
+}
+
+.settings input {
+    width: 100%;
+    height: 52px;
+
+    padding: 0 1rem;
+
+    font-size: 1rem;
+
+    border: 2px solid transparent;
+    border-radius: 12px;
+
+    outline: none;
+}
+
+.settings input:focus {
+    border-color: var(--yellow);
+}
+
+.settings textarea {
+    width: 100%;
+    min-height: 140px;
+
+    margin-top: 1rem;
+    padding: 1rem;
+
+    font-size: 1rem;
+    line-height: 1.5;
+
+    border: 2px solid transparent;
+    border-radius: 12px;
+
+    resize: vertical;
+}
+
+.settings button {
+    width: 100%;
+
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.2rem;
+
+    background: var(--yellow);
+    color: var(--black);
+
+    border-radius: 12px;
+
+    font-size: 1rem;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.settings button:hover {
+    background: #ffe77d;
+}
+
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+.alertas-div {
+    min-height: calc(100vh - 80px);
+    width: 100%;
+
+    padding: 3rem;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #191919,
+            var(--black) 65%
+        );
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.alertas-div h1 {
+    margin-bottom: 2rem;
+
+    color: var(--yellow);
+
+    text-align: center;
+
+    font-size: clamp(2rem, 4vw, 4rem);
+    font-weight: 800;
+
+    letter-spacing: -0.04em;
+}
+
+.galeria {
+    width: min(1400px, 100%);
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.alerta {
+    overflow: hidden;
+
+    background: var(--black-soft);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    color: var(--yellow);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.alerta:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 222, 89, 0.6);
+}
+
+.alerta p {
+    padding: 1rem 1rem 0.75rem;
+
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.alerta img {
+    width: 100%;
+    height: 240px;
+
+    object-fit: cover;
+
+    border-top: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   TEST MODEL
+========================================================= */
+
+.test-div {
+    min-height: calc(100vh - 80px);
+
+    width: 100%;
+
+    padding: 3rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: var(--black);
+
+    color: var(--yellow);
+}
+
+.test-div form {
+    width: min(100%, 700px);
+}
+
+
+/* =========================================================
+   UTILITY
+========================================================= */
+
+#back {
+    bottom: 6rem;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .main-div-log {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-div {
+        min-height: auto;
+        padding: 3rem 2rem;
+    }
+
+    .welcome-div img {
+        width: 80px;
+        margin-bottom: 2rem;
+    }
+
+    .welcome-div h1 {
+        font-size: 4.5rem;
+    }
+
+    .login-div {
+        min-height: auto;
+        padding: 4rem 2rem;
+    }
+
+    .home {
+        grid-template-columns: 1fr;
+    }
+
+    .left-div {
+        display: none;
+    }
+
+    .cameras {
+        padding: 2rem;
+    }
+
+    .cam {
+        grid-template-columns: 1fr;
+    }
+
+    .settings {
+        border-left: none;
+        border-top: 1px solid var(--border);
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .card-cont {
+        grid-template-columns: 1fr;
+    }
+
+    .galeria {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .welcome-div h1 {
+        font-size: 4rem;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .nap {
+        height: 68px;
+        padding: 0 1rem;
+    }
+
+    .nap img {
+        width: 48px;
+    }
+
+    .welcome-div {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .welcome-div h1 {
+        font-size: 3.5rem;
+    }
+
+    .welcome-div h2 {
+        font-size: 1rem;
+    }
+
+    .login-div {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .login-div h1 {
+        font-size: 2.4rem;
+    }
+
+    .cameras {
+        padding: 1.5rem;
+    }
+
+    .cameras h1 {
+        font-size: 3rem;
+    }
+
+    .cam-add-main {
+        padding: 1rem;
+    }
+
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    .video {
+        padding: 1rem;
+    }
+
+    .settings {
+        padding: 2rem 1rem;
+    }
+
+    .alertas-div {
+        padding: 2rem 1rem;
+    }
+
+    .galeria {
+        grid-template-columns: 1fr;
+    }
+
+    .alerta img {
+        height: 220px;
+    }
+
+    .cam-add {
+        right: 1rem;
+        bottom: 1rem;
+
+        width: 52px;
+        height: 52px;
+    }
+}

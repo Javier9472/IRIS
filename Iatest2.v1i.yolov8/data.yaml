@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['fire', 'handgun', 'knife', 'knives']
+
+roboflow:
+  workspace: ia-e8qwe
+  project: iatest2
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ia-e8qwe/iatest2/dataset/1
