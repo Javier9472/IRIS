@@ -13,3 +13,34 @@ __pycache__/
 Thumbs.db
 .vscode/
 .idea/
+
+# ============================================================
+# Específico de Iris
+# ============================================================
+
+# Logs: la carpeta se versiona (con .gitkeep), los archivos no.
+logs/*.log
+
+# Datasets de Roboflow: son miles de imágenes (~46 MB) y no aportan
+# nada versionados -- se re-descargan desde Roboflow cuando hagan falta
+# (los links están en cada data.yaml y en el README).
+datasets/
+
+# Resultados de entrenamiento: nos quedamos con las gráficas/métricas
+# (F1_curve.png, results.csv, args.yaml, etc. -- útiles para el
+# portafolio) pero NO con los pesos de cada corrida, que pesan varios
+# MB cada uno y se regeneran entrenando de nuevo.
+training_runs/**/weights/
+
+# OJO: ml_models/*.pt (el modelo que la app usa en producción) SÍ se
+# versiona a propósito -- pesa ~6 MB y así el proyecto funciona apenas
+# se clona, sin depender de que alguien reentrene primero.
+
+# Media generada en tiempo de ejecución (alertas detectadas, archivos
+# temporales de /test/): son datos, no código.
+media/*
+!media/.gitkeep
+
+# Base de datos de desarrollo: no se versiona (usa migrate +
+# createsuperuser para armar una limpia). Ver README.
+db.sqlite3
