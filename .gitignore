@@ -44,3 +44,16 @@ media/*
 # Base de datos de desarrollo: no se versiona (usa migrate +
 # createsuperuser para armar una limpia). Ver README.
 db.sqlite3
+
+# Checkpoints base sueltos en la raíz o en ml_models/pretrained/:
+# ultralytics los descarga solo cuando hacen falta para reentrenar,
+# no son parte versionable del proyecto (a diferencia de
+# ml_models/weapons_v1/best.pt, que sí se versiona a propósito).
+/*.pt
+ml_models/pretrained/
+
+# Salida por defecto de ultralytics cuando el project/name no cae
+# en training_runs/ (ver runs/detect/training_runs/iris_v1_yolo11s_960-2/,
+# de donde salió el best.pt actual en producción). No es la carpeta
+# canónica del proyecto pero tampoco se versiona.
+runs/
