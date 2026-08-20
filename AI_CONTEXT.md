@@ -16,7 +16,7 @@
 ## 2. Stack y entorno
 
 - Backend: Python 3.11, Django 5.2  
-- IA: YOLO (Ultralytics) — migrando a YOLOv8s/m con dataset propio
+- IA: YOLO Ultralytics) — migrando a YOLOv11 con dataset propio
 - Base de datos: SQLite (solo eventos/alertas, sin sistema multiusuario)
 - Frontend: HTML + CSS puro, sin frameworks, mobile-first
 - Autenticación: `django.contrib.auth`, en transición a un solo Admin
@@ -38,12 +38,13 @@
 ```
 IRIS/
 ├── datasets/
-├   ├── IaFinal0.v1i.yolov8 (guarda dentro test, train, valid y data.yaml)
-│   ├── Iatest2.v1i.yolov8 (guarda dentro test, train, valid y data.yaml)
+├   ├─── iris.v1i.yolov11        #train-valid-data
+│   └── merge_and_clean.py
 ├── eye/                  # Config Django
 ├── logs/
 ├── media/
 ├── ml_models/
+├── runs/
 ├── static/css/style.css
 ├── training_runs/
 ├── users/
@@ -53,7 +54,9 @@ IRIS/
 │   └── urls.py
 ├── db.sqlite3
 ├── manage.py
-└── requirements.txt
+├── requirements.txt
+├── AI_CONTEXT.md
+└── train.py 
 ```
 
 ## 5. Convenciones de diseño (UI)
@@ -82,9 +85,10 @@ Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF
 | Fase | Descripción | Estado |
 |---|---|---|
 | 1 | Reorganización de carpetas/estructura (views modulares, logging, rutas de pesos) | ✅ Completada |
-| 2 | Reentrenar el modelo (dataset propio, limpiar clases sucias `'0'`, `'1'`, `'crash'`, mayor resolución, YOLOv8s/m) | 🔵 Prioridad actual |
-| 3 | Refactor UI/CSS mobile-first + autenticación de Admin único | ⏳ Pendiente |
-| 4 | Cámara vía celular por QR (token de un solo uso, `getUserMedia`, envío de frames) + explorar acceso remoto por internet sin estar en la misma red Wi-Fi | ⏳ Pendiente |
+| 2 | Reentrenar el modelo (dataset propio, limpiar clases sucias `'0'`, `'1'`, `'crash'`, mayor resolución, YOLOv11s/m) | ✅ Completada |
+| 3 | Borrar y organizar repositorio de codigo inutil o restos antiguos | ⏳ Pendiente |
+| 4 | Refactor UI/CSS mobile-first + autenticación de Admin único | ⏳ Pendiente |
+| 5 | Cámara vía celular por QR (token de un solo uso, `getUserMedia`, envío de frames) + explorar acceso remoto por internet sin estar en la misma red Wi-Fi | ⏳ Pendiente |
 
 ## 7. Decisiones ya tomadas (no volver a preguntar)
 
@@ -101,10 +105,11 @@ Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF
   `CHANGELOG: <archivo(s)> — <qué cambió, en una frase>`
 - No toques la Sección 3 (arquitectura núcleo) sin que se te pida explícitamente.
 - Trabaja solo sobre la misión activa descrita en la Sección 9. No adelantes fases futuras.
+-Pide los archivos que necesitas. 
 
 ## 9. Estado actual / Misión activa
 
-**Última actualización:** 18/08/26
+**Última actualización:** 20/08/26
 **Misión de hoy:** Fase 3
 **Archivos relevantes para esta misión:** 
-**Changelog de la sesión anterior:**  CHANGELOG: train.py — imgsz subido de 640 a 960 (aumento de resolución) y batch ajustado a 8 por el mayor consumo de VRAM.
+CHANGELOG: resume_train.py — nuevo script para retomar el entrenamiento desde last.pt tras una pausa/apagado.

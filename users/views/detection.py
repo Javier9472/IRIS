@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 # que solo funcionaba si Django se lanzaba desde la carpeta exacta del
 # proyecto. Ahora es absoluta a partir de BASE_DIR, así que no importa
 # desde dónde se ejecute manage.py.
-MODEL_PATH = str(settings.BASE_DIR / "ml_models" / "weapons_v1" / "best.pt")
+MODEL_PATH = r"C:\Users\JAVIER\Desktop\IRIS\runs\detect\training_runs\iris_v1_yolo11s_960-2\weights\best.pt"
 
 model = YOLO(MODEL_PATH)
 

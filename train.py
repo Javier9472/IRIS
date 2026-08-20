@@ -16,11 +16,10 @@ BASE_MODEL = "yolo11s.pt"  # YOLO11 (antes yolov8s.pt); "yolo11m.pt" si la
                            # GPU/VRAM lo permite y se busca más precisión
 
 EPOCHS = 100
-IMG_SIZE = 960
-BATCH = 8
+IMG_SIZE = 640  # antes 960
+BATCH = -1      # antes 8; AutoBatch calcula el máximo seguro para tu GPU
+RUN_NAME = "iris_v1_yolo11s_640"
 PROJECT = "training_runs"
-RUN_NAME = "iris_v1_yolo11s_960"
-
 
 def main():
     model = YOLO(BASE_MODEL)
