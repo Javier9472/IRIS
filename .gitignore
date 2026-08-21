@@ -58,5 +58,3 @@ ml_models/pretrained/
 # canónica del proyecto pero tampoco se versiona.
 runs/
 
-# Archivo de contexto para inteligencia artificial 
-AI_CONTEXT.md
