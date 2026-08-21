@@ -12,14 +12,15 @@ from ultralytics import YOLO
 
 DATA_YAML = Path(__file__).resolve().parent / "datasets" / "iris_v1" / "data.yaml"
 
-BASE_MODEL = "yolo11s.pt"  # YOLO11 (antes yolov8s.pt); "yolo11m.pt" si la
-                           # GPU/VRAM lo permite y se busca más precisión
+BASE_MODEL = str(Path(__file__).resolve().parent / "ml_models" / "pretrained" / "yolo11s.pt")
 
 EPOCHS = 100
 IMG_SIZE = 640  # antes 960
 BATCH = -1      # antes 8; AutoBatch calcula el máximo seguro para tu GPU
 RUN_NAME = "iris_v1_yolo11s_640"
-PROJECT = "training_runs"
+
+# train.py — evita que un futuro run vuelva a anidarse en runs/
+PROJECT = str(Path(__file__).resolve().parent / "training_runs")
 
 def main():
     model = YOLO(BASE_MODEL)

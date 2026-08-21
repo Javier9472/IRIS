@@ -33,11 +33,15 @@ logger = logging.getLogger(__name__)
 # MODELO YOLO
 # ============================================================
 
-# Antes: YOLO("runs/detect/train27/weights/best.pt") -- una ruta relativa
-# que solo funcionaba si Django se lanzaba desde la carpeta exacta del
-# proyecto. Ahora es absoluta a partir de BASE_DIR, así que no importa
-# desde dónde se ejecute manage.py.
-MODEL_PATH = r"C:\Users\JAVIER\Desktop\IRIS\runs\detect\training_runs\iris_v1_yolo11s_960-2\weights\best.pt"
+# Ruta absoluta a partir de BASE_DIR: no depende de la máquina ni de
+# desde dónde se ejecute manage.py. Apunta al peso versionado en
+# ml_models/ (Sección 3 de AI_CONTEXT.md), no a un run local de
+# training_runs/ (gitignored, no reproducible en otro entorno).
+MODEL_PATH = os.path.join(
+    settings.BASE_DIR, 'ml_models', 'weapons_v1', 'best.pt'
+)
+
+model = YOLO(MODEL_PATH)
 
 model = YOLO(MODEL_PATH)
 
@@ -165,10 +169,10 @@ def generar_stream(
     camara_id
 ):
 
-    # Cámara local del PC
-    if str(camara_ip).strip() == '0':
+# Cámara local del PC o múltiples USB
+    if str(camara_ip).strip().isdigit():
 
-        fuente = 0
+        fuente = int(str(camara_ip).strip())
 
     # Si ya es una URL
     elif (

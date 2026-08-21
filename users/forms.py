@@ -34,7 +34,7 @@ class CustomUserCreationForm(UserCreationForm):
         }
 
 
-from .models import Camera, CameraImage
+from .models import Camera
 
 class CameraForm(forms.ModelForm):
     class Meta:
@@ -44,11 +44,6 @@ class CameraForm(forms.ModelForm):
             'intervalo_captura': forms.NumberInput(attrs={'step': 0.1, 'min': 0.1}),
             'certeza_minima': forms.NumberInput(attrs={'step': 0.1, 'min': 0.0, 'max': 1.0}),
         }
-
-class CameraImageForm(forms.ModelForm):
-    class Meta:
-        model = CameraImage
-        fields = ['imagen']
 
 class CameraSettingsForm(forms.ModelForm):
     class Meta:

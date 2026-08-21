@@ -13,11 +13,6 @@ class Camera(models.Model):
     def __str__(self):
         return self.nombre
 
-class CameraImage(models.Model):
-    camera = models.ForeignKey(Camera, on_delete=models.CASCADE, related_name='imagenes')
-    imagen = models.ImageField(upload_to='capturas/')
-    fecha_subida = models.DateTimeField(auto_now_add=True)
-
 
 class Alerta(models.Model):
     camara = models.ForeignKey(Camera, on_delete=models.CASCADE)
@@ -27,4 +22,3 @@ class Alerta(models.Model):
 
     def __str__(self):
         return f"{self.tipo_deteccion} - {self.fecha_deteccion.strftime('%Y-%m-%d %H:%M:%S')}"
-

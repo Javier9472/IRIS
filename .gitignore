@@ -57,3 +57,6 @@ ml_models/pretrained/
 # de donde salió el best.pt actual en producción). No es la carpeta
 # canónica del proyecto pero tampoco se versiona.
 runs/
+
+# Archivo de contexto para inteligencia artificial 
+AI_CONTEXT.md
