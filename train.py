@@ -10,7 +10,8 @@ Uso:
 from pathlib import Path
 from ultralytics import YOLO
 
-DATA_YAML = Path(__file__).resolve().parent / "datasets" / "iris_v1" / "data.yaml"
+# train.py — corrige el mismatch, único cambio en este archivo
+DATA_YAML = Path(__file__).resolve().parent / "datasets" / "iris.v1i.yolov11" / "data.yaml"
 
 BASE_MODEL = str(Path(__file__).resolve().parent / "ml_models" / "pretrained" / "yolo11s.pt")
 
