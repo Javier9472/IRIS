@@ -2,21 +2,25 @@
    RESET / BASE
 ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
-    --yellow: #ffcc00;
-    --yellow-dark: #e7c544;
-    --red: #c40707;
-    --red-dark: #a80505;
-    --black: #080808;
-    --black-soft: #111111;
-    --white: #ffffff;
-    --gray: #a6a6a6;
-    --skyblue: #34a8e7;
-    --border: rgba(255, 222, 89, 0.22);
-    --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-    --radius: 18px;
+    --color-50: #EFF6FF;
+    --color-100: #DBEAFE;
+    --color-200: #BEDBFF;
+    --color-300: #8EC5FF;
+    --color-400: #51A2FF;
+    --color-500: #2B7FFF;
+    --color-600: #155DFC;
+    --color-700: #1447E6;
+    --color-800: #193CB8;
+    --color-900: #1C398E;
+    --color-950: #162456;
+
+    --danger: #c40707;
+    --danger-dark: #a80505;
+
+    --border: rgba(43, 127, 255, 0.22);
+    --shadow: 0 16px 40px rgba(22, 36, 86, 0.35);
+    --radius: 16px;
 }
 
 * {
@@ -30,11 +34,10 @@ html {
 }
 
 body {
-    margin: 0;
     min-height: 100vh;
     font-family: "Inter", sans-serif;
-    background: var(--black);
-    color: var(--white);
+    background: var(--color-950);
+    color: var(--color-50);
 }
 
 img {
@@ -44,370 +47,19 @@ img {
 
 button,
 input,
-textarea {
+textarea,
+select {
     font-family: inherit;
 }
 
 button {
     border: none;
+    cursor: pointer;
 }
 
 a {
     color: inherit;
     text-decoration: none;
-}
-
-.inter-font {
-    font-family: "Inter", sans-serif;
-}
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-.main-div-log {
-    min-height: 100vh;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-
-/* ---------- WELCOME ---------- */
-
-.welcome-div {
-    min-height: 100vh;
-    background:
-        radial-gradient(
-            circle at top left,
-            rgba(255, 222, 89, 0.15),
-            transparent 35%
-        ),
-        linear-gradient(
-            145deg,
-            var(--white),
-            var(--white)
-        );
-
-    padding: 4rem clamp(2rem, 7vw, 8rem);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-
-    position: relative;
-    overflow: hidden;
-}
-
-.welcome-div::after {
-    content: "";
-    position: absolute;
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
-    background: rgba(255, 222, 89, 0.08);
-    right: -120px;
-    bottom: -120px;
-}
-
-.welcome-div img {
-    width: 110px;
-    margin-bottom: 4rem;
-    object-fit: contain;
-}
-
-.welcome-div h1 {
-    color: var(--black);
-    font-size: clamp(4rem, 7vw, 7.5rem);
-    line-height: 0.95;
-    font-weight: 800;
-    letter-spacing: -0.06em;
-    margin-bottom: 2rem;
-}
-
-.welcome-div h2 {
-    max-width: 600px;
-    color: rgba(0, 0, 0, 0.92);
-    font-size: clamp(1.1rem, 1.8vw, 1.7rem);
-    line-height: 1.5;
-    font-weight: 500;
-    margin-bottom: 2.5rem;
-}
-
-.welcome-div button {
-    min-width: 190px;
-    padding: 0.95rem 1.8rem;
-
-    background-color: skyblue;
-    color: var(--black);
-
-    font-size: 1.05rem;
-    font-weight: 800;
-
-    border-radius: 999px;
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.welcome-div button:hover {
-    background-color: #ffe77d;
-    transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
-}
-
-
-/* ---------- LOGIN FORM ---------- */
-
-.login-div {
-    min-height: 100vh;
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(255, 222, 89, 0.18),
-            transparent 30%
-        ),
-        var(--yellow);
-
-    padding: 3rem;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-div > div,
-.login-div > form,
-.login-div > small {
-    width: min(100%, 430px);
-}
-
-.login-div h1 {
-    color: var(--black);
-    font-size: clamp(2.2rem, 4vw, 4rem);
-    line-height: 1;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    margin-bottom: 2.5rem;
-}
-
-.login-div form {
-    display: flex;
-    flex-direction: column;
-}
-
-.info-box {
-    width: 100%;
-    margin-bottom: 1rem;
-}
-
-.login-div input {
-    width: 100%;
-    height: 58px;
-
-    padding: 0 1.25rem;
-
-    border: 2px solid transparent;
-    border-radius: 14px;
-
-    background: rgba(255, 255, 255, 0.95);
-    color: var(--black);
-
-    font-size: 1rem;
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-.login-div input::placeholder {
-    color: #777;
-}
-
-.login-div input:focus {
-    border-color: var(--black);
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
-}
-
-.container-btn {
-    width: 100%;
-    margin-top: 1rem;
-}
-
-.login-div button {
-    width: 100%;
-    height: 58px;
-
-    border-radius: 14px;
-
-    background-color: var(--black);
-    color: var(--yellow);
-
-    font-size: 1.05rem;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.login-div button:hover {
-    background-color: #1d1d1d;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-}
-
-.login-div {
-    min-height: 100vh;
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(255, 222, 89, 0.18),
-            transparent 30%
-        ),
-        var(--skyblue);
-
-    padding: 3rem;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-/* FORMULARIO COMPLETO */
-
-.login-div form {
-    width: min(100%, 430px);
-
-    display: flex;
-    flex-direction: column;
-}
-
-
-/* TÍTULO */
-
-.login-div h1 {
-    color: var(--black);
-    font-size: clamp(2.2rem, 4vw, 4rem);
-    line-height: 1;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    
-    margin-bottom: 2.5rem;
-}
-
-
-/* INPUTS */
-
-.info-box {
-    width: 100%;
-    margin-bottom: 1rem;
-}
-
-.login-div input {
-    width: 100%;
-    height: 58px;
-
-    padding: 0 1.25rem;
-
-    border: 2px solid transparent;
-    border-radius: 14px;
-
-    background: rgba(255, 255, 255, 0.95);
-    color: var(--black);
-
-    font-size: 1rem;
-
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-.login-div input::placeholder {
-    color: #777;
-}
-
-.login-div input:focus {
-    border-color: var(--black);
-
-    box-shadow:
-        0 0 0 4px rgba(0, 0, 0, 0.08);
-
-    transform: translateY(-1px);
-}
-
-
-/* BOTÓN */
-
-.container-btn {
-    width: 100%;
-    margin-top: 1rem;
-}
-
-.login-div button {
-    width: 100%;
-    height: 58px;
-
-    border-radius: 14px;
-
-    background-color: var(--black);
-    color: var(--white);
-
-    font-size: 1.05rem;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.login-div button:hover {
-    background-color: #1d1d1d;
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 12px 25px rgba(0, 0, 0, 0.2);
-}
-
-
-/* OLVIDÉ MI CONTRASEÑA */
-
-.login-div small {
-    display: block;
-
-    width: 100%;
-
-    margin-top: 1rem;
-    padding-left: 0.25rem;
-
-    color: rgba(0, 0, 0, 0.7);
-
-    font-size: 0.9rem;
-
-    text-align: left;
-
-    text-decoration: underline;
-
-    cursor: pointer;
 }
 
 
@@ -417,15 +69,13 @@ a {
 
 .nap {
     width: 100%;
-    height: 80px;
-
-    padding: 0 2rem;
+    height: 64px;
+    padding: 0 1rem;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
-    background: var(--white);
+    background: var(--color-50);
 
     position: sticky;
     top: 0;
@@ -433,9 +83,153 @@ a {
 }
 
 .nap img {
-    width: 55px;
+    width: 44px;
     height: auto;
     object-fit: contain;
+}
+
+
+/* =========================================================
+   AUTENTICACIÓN (login / register)
+========================================================= */
+
+.auth-page {
+    min-height: 100vh;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 2rem 1.25rem;
+
+    background:
+        radial-gradient(circle at top, var(--color-900), var(--color-950) 65%);
+}
+
+.auth-card {
+    width: min(100%, 420px);
+
+    padding: 2rem 1.5rem;
+
+    background: var(--color-50);
+    color: var(--color-950);
+
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.auth-card img {
+    width: 64px;
+    margin: 0 auto 1.25rem;
+}
+
+.auth-card h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--color-800);
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-box {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.auth-card input {
+    width: 100%;
+    height: 52px;
+    padding: 0 1rem;
+
+    border: 2px solid var(--color-200);
+    border-radius: 12px;
+
+    background: #fff;
+    color: var(--color-950);
+
+    font-size: 1rem;
+    outline: none;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card input::placeholder {
+    color: var(--color-800);
+    opacity: 0.6;
+}
+
+.auth-card input:focus {
+    border-color: var(--color-500);
+    box-shadow: 0 0 0 4px rgba(43, 127, 255, 0.15);
+}
+
+.container-btn {
+    margin-top: 0.5rem;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 52px;
+
+    background: var(--color-600);
+    color: #fff;
+
+    border-radius: 12px;
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: var(--color-700);
+    transform: translateY(-2px);
+}
+
+.errorlist {
+    list-style: none;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+
+    background: rgba(196, 7, 7, 0.08);
+    border: 1px solid rgba(196, 7, 7, 0.3);
+    border-radius: 10px;
+
+    color: var(--danger);
+    font-size: 0.85rem;
+}
+
+.errorlist li,
+.errorlist p {
+    margin: 0;
+}
+
+.auth-switch {
+    display: block;
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-800);
+}
+
+.auth-switch a {
+    color: var(--color-600);
+    font-weight: 700;
+    text-decoration: underline;
 }
 
 
@@ -444,137 +238,78 @@ a {
 ========================================================= */
 
 .home {
-    min-height: calc(100vh - 80px);
-
-    display: grid;
-    grid-template-columns: 38% 62%;
-
-    background: var(--black);
+    min-height: calc(100vh - 64px);
+    background: var(--color-950);
 }
 
 .left-div {
-    min-height: 100%;
-    background-image:
-        linear-gradient(
-            to bottom,
-            #34a8e7,
-            #4a23d5
-        ),
-        url("../img/CCTV Security.jpg");
-
-    background-size: cover;
-    background-position: center;
+    display: none;
 }
 
 .cameras {
-    min-width: 0;
-    padding: 3.5rem;
-    background: linear-gradient(
-            to bottom,
-            #34a8e7,
-            #4a23d5
-        );
-    overflow-y: auto;
+    padding: 1.5rem 1.25rem 6rem;
 }
 
 .cameras h1 {
-    margin-bottom: 2.5rem;
-    color: #000000;
-    font-size: clamp(2.5rem, 5vw, 5.5rem);
-    line-height: 1;
+    margin-bottom: 1.5rem;
+    color: var(--color-50);
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
     font-weight: 800;
-
-    letter-spacing: -0.06em;
+    letter-spacing: -0.04em;
 }
 
 .card-cont {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
 .camara-card {
-    padding: 1.5rem;
+    padding: 1.25rem;
 
-    background:
-        linear-gradient(
-            145deg,
-            #34a8e7,
-            #4a23d5
-        );
+    background: var(--color-50);
+    color: var(--color-950);
 
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
 
-    color: var(--black);
-
     box-shadow: var(--shadow);
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.camara-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.45);
 }
 
 .camara-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
 }
 
 .camara-card p {
-    margin: 0.35rem 0;
-    color: rgba(0, 0, 0, 0.7);
+    margin: 0.25rem 0;
+    color: var(--color-800);
+    font-size: 0.9rem;
 }
 
 .camara-card a {
     display: inline-flex;
-    margin-top: 1rem;
-
-    color: var(--black);
-
+    margin-top: 0.75rem;
+    margin-right: 1rem;
+    color: var(--color-600);
     font-weight: 700;
-
-    transition: opacity 0.2s ease;
+    font-size: 0.9rem;
 }
 
-.camara-card a:hover {
-    opacity: 0.65;
+.camara-card a.link-danger {
+    color: var(--danger);
 }
 
 
-/* ---------- ADD CAMERA BUTTON ---------- */
-
-.add-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0.8rem 1.2rem;
-
-    background-color: var(--yellow);
-    color: var(--black);
-
-    border-radius: 12px;
-
-    font-weight: 700;
-}
-
-.add-button:hover {
-    background-color: #ffe77d;
-}
+/* ---------- BOTONES FLOTANTES ---------- */
 
 .cam-add {
     position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
 
-    right: 2rem;
-    bottom: 2rem;
-
-    width: 58px;
-    height: 58px;
+    width: 52px;
+    height: 52px;
 
     display: flex;
     align-items: center;
@@ -582,68 +317,61 @@ a {
 
     border-radius: 50%;
 
-    background-color: var(--yellow);
-    color: var(--black);
+    background: var(--color-600);
+    color: #fff;
 
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 1.6rem;
 
     box-shadow: var(--shadow);
 
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease;
+    transition: transform 0.2s ease, background 0.2s ease;
 
     z-index: 50;
 }
 
 .cam-add:hover {
-    transform: scale(1.08);
-    background-color: #ffe77d;
+    transform: scale(1.06);
+    background: var(--color-700);
+}
+
+#back {
+    right: 1.25rem;
+    bottom: 5.25rem;
+    background: var(--color-50);
+    color: var(--color-950);
 }
 
 
 /* =========================================================
-   NUEVA CÁMARA
+   FORMULARIO (nueva cámara)
 ========================================================= */
 
 .cam-add-main {
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 64px);
     width: 100%;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 2rem;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #1a1a1a,
-            var(--black) 70%
-        );
+    padding: 1.5rem 1.25rem;
 }
 
 .form-container {
-    width: min(100%, 600px);
+    width: min(100%, 560px);
 
-    padding: 2.5rem;
+    padding: 1.75rem 1.5rem;
 
-    background: #151515;
+    background: var(--color-50);
+    color: var(--color-950);
 
-    border: 1px solid var(--border);
-    border-radius: 22px;
-
+    border-radius: var(--radius);
     box-shadow: var(--shadow);
 }
 
 .form-container h2 {
-    margin-bottom: 2rem;
-
-    color: var(--yellow);
-
-    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
     font-weight: 800;
     text-align: center;
 }
@@ -654,27 +382,23 @@ a {
 }
 
 .form-container label {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-
-    color: #ddd;
-
+    margin-top: 0.85rem;
+    margin-bottom: 0.4rem;
     font-weight: 600;
+    font-size: 0.9rem;
 }
 
 .form-container input,
 .form-container textarea,
 .form-container select {
     width: 100%;
-
-    padding: 0.95rem 1rem;
+    padding: 0.85rem 1rem;
 
     background: #fff;
-    color: var(--black);
+    color: var(--color-950);
 
-    border: 2px solid transparent;
+    border: 2px solid var(--color-200);
     border-radius: 12px;
-
     outline: none;
 
     transition: border-color 0.2s ease;
@@ -683,253 +407,190 @@ a {
 .form-container input:focus,
 .form-container textarea:focus,
 .form-container select:focus {
-    border-color: var(--yellow);
+    border-color: var(--color-500);
 }
 
 .form-container button {
     width: 100%;
-
     margin-top: 1.5rem;
-    padding: 0.95rem;
+    padding: 0.9rem;
 
-    background: var(--yellow);
-    color: var(--black);
+    background: var(--color-600);
+    color: #fff;
 
     border-radius: 12px;
-
-    font-size: 1rem;
-    font-weight: 800;
-
-    cursor: pointer;
+    font-weight: 700;
 }
 
 .form-container button:hover {
-    background: #ffe77d;
+    background: var(--color-700);
 }
 
 .form-container a {
     display: block;
-
     margin-top: 1rem;
-
     text-align: center;
-
-    color: var(--yellow);
+    color: var(--color-600);
     font-weight: 600;
 }
 
 
 /* =========================================================
-   CAM
+   CAM (stream + settings)
 ========================================================= */
 
 .cam {
-    min-height: calc(100vh - 80px);
-
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-
-    background: var(--black);
-
-    overflow: hidden;
+    min-height: calc(100vh - 64px);
+    background: var(--color-950);
 }
 
 .video {
-    min-width: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 2rem;
+    padding: 1.25rem;
 }
 
-.cam-cont {
-    width: 100%;
-    max-width: 900px;
+.video h2 {
+    color: var(--color-50);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
 }
 
 .cam-cont img {
     width: 100%;
-    max-height: 75vh;
-
-    object-fit: contain;
-
-    border: 2px solid var(--yellow);
-    border-radius: 20px;
-
+    border: 2px solid var(--color-600);
+    border-radius: var(--radius);
     box-shadow: var(--shadow);
 }
 
 .settings {
-    min-width: 0;
-
-    padding: 3rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    color: var(--yellow);
-
-    border-left: 1px solid var(--border);
-}
-
-.settings h1,
-.settings h2 {
-    margin-bottom: 1.5rem;
+    padding: 1.5rem 1.25rem 6rem;
+    color: var(--color-50);
+    border-top: 1px solid var(--border);
 }
 
 .settings form {
-    width: min(100%, 500px);
     display: flex;
     flex-direction: column;
 }
 
 .settings label {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-
-    color: #ddd;
+    margin-top: 0.85rem;
+    margin-bottom: 0.4rem;
     font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-200);
 }
 
 .settings input {
     width: 100%;
-    height: 52px;
+    height: 48px;
+    padding: 0 0.85rem;
 
-    padding: 0 1rem;
-
-    font-size: 1rem;
+    background: #fff;
+    color: var(--color-950);
 
     border: 2px solid transparent;
     border-radius: 12px;
-
     outline: none;
 }
 
 .settings input:focus {
-    border-color: var(--yellow);
+    border-color: var(--color-500);
 }
 
 .settings textarea {
     width: 100%;
-    min-height: 140px;
-
+    min-height: 120px;
     margin-top: 1rem;
-    padding: 1rem;
+    padding: 0.85rem;
 
-    font-size: 1rem;
-    line-height: 1.5;
+    background: var(--color-900);
+    color: var(--color-50);
 
-    border: 2px solid transparent;
+    border: 1px solid var(--border);
     border-radius: 12px;
 
+    font-size: 0.85rem;
+    line-height: 1.5;
     resize: vertical;
 }
 
 .settings button {
     width: 100%;
+    margin-top: 1.25rem;
+    padding: 0.85rem;
 
-    margin-top: 1.5rem;
-    padding: 0.9rem 1.2rem;
-
-    background: var(--yellow);
-    color: var(--black);
+    background: var(--color-600);
+    color: #fff;
 
     border-radius: 12px;
-
-    font-size: 1rem;
-    font-weight: 800;
-
-    cursor: pointer;
+    font-weight: 700;
 }
 
 .settings button:hover {
-    background: #ffe77d;
+    background: var(--color-700);
 }
 
 
 /* =========================================================
-   ALERTAS
+   ALERTAS / GALERÍA
 ========================================================= */
 
 .alertas-div {
-    min-height: calc(100vh - 80px);
-    width: 100%;
+    min-height: calc(100vh - 64px);
+    padding: 1.5rem 1.25rem 6rem;
 
-    padding: 3rem;
-
-    background:
-        radial-gradient(
-            circle at top,
-            #191919,
-            var(--black) 65%
-        );
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--color-950);
 }
 
 .alertas-div h1 {
-    margin-bottom: 2rem;
-
-    color: var(--yellow);
-
-    text-align: center;
-
-    font-size: clamp(2rem, 4vw, 4rem);
+    margin-bottom: 0.5rem;
+    color: var(--color-50);
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
     font-weight: 800;
+    letter-spacing: -0.03em;
+}
 
-    letter-spacing: -0.04em;
+.alertas-div > a {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: var(--color-300);
+    font-weight: 600;
 }
 
 .galeria {
-    width: min(1400px, 100%);
-
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
 .alerta {
     overflow: hidden;
 
-    background: var(--black-soft);
+    background: var(--color-900);
+    color: var(--color-50);
 
     border: 1px solid var(--border);
     border-radius: var(--radius);
 
-    color: var(--yellow);
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.alerta:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 222, 89, 0.6);
-}
-
-.alerta p {
-    padding: 1rem 1rem 0.75rem;
-
-    font-size: 0.9rem;
-    line-height: 1.4;
+    box-shadow: var(--shadow);
 }
 
 .alerta img {
     width: 100%;
-    height: 240px;
-
+    height: 200px;
     object-fit: cover;
+}
 
-    border-top: 1px solid var(--border);
+.alerta h3 {
+    padding: 0.85rem 1rem 0.25rem;
+    font-size: 1rem;
+    text-transform: capitalize;
+}
+
+.alerta p {
+    padding: 0 1rem 0.85rem;
+    font-size: 0.85rem;
+    color: var(--color-300);
 }
 
 
@@ -938,175 +599,200 @@ a {
 ========================================================= */
 
 .test-div {
-    min-height: calc(100vh - 80px);
-
-    width: 100%;
-
-    padding: 3rem;
+    min-height: calc(100vh - 64px);
+    padding: 1.5rem 1.25rem 6rem;
 
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    background: var(--black);
+    background: var(--color-950);
+    color: var(--color-50);
+}
 
-    color: var(--yellow);
+.test-div h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    font-weight: 800;
+    text-align: center;
 }
 
 .test-div form {
-    width: min(100%, 700px);
+    width: min(100%, 560px);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+
+    margin-bottom: 1.5rem;
+}
+
+.test-div input[type="file"] {
+    width: 100%;
+    padding: 0.85rem;
+
+    background: var(--color-900);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+
+    color: var(--color-50);
+    font-size: 0.9rem;
+}
+
+.test-div button {
+    padding: 0.85rem;
+
+    background: var(--color-600);
+    color: #fff;
+
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.test-div button:hover {
+    background: var(--color-700);
+}
+
+.test-div > p {
+    margin-bottom: 1.5rem;
+    color: var(--danger);
+}
+
+.test-results {
+    width: 100%;
+    max-width: 1000px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.test-results h3 {
+    margin-bottom: 0.5rem;
+    color: var(--color-300);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.test-results img,
+.test-results video {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
 }
 
 
 /* =========================================================
-   UTILITY
+   RESPONSIVE (mobile-first: base = mobile, se agranda)
 ========================================================= */
 
-#back {
-    bottom: 6rem;
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 1100px) {
-
-    .main-div-log {
-        grid-template-columns: 1fr;
-    }
-
-    .welcome-div {
-        min-height: auto;
-        padding: 3rem 2rem;
-    }
-
-    .welcome-div img {
-        width: 80px;
-        margin-bottom: 2rem;
-    }
-
-    .welcome-div h1 {
-        font-size: 4.5rem;
-    }
-
-    .login-div {
-        min-height: auto;
-        padding: 4rem 2rem;
-    }
-
-    .home {
-        grid-template-columns: 1fr;
-    }
-
-    .left-div {
-        display: none;
-    }
-
-    .cameras {
-        padding: 2rem;
-    }
-
-    .cam {
-        grid-template-columns: 1fr;
-    }
-
-    .settings {
-        border-left: none;
-        border-top: 1px solid var(--border);
-    }
-}
-
-
-@media (max-width: 800px) {
+@media (min-width: 600px) {
 
     .card-cont {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .galeria {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .welcome-div h1 {
-        font-size: 4rem;
+    .test-results {
+        flex-direction: row;
     }
 }
 
-
-@media (max-width: 600px) {
+@media (min-width: 900px) {
 
     .nap {
-        height: 68px;
-        padding: 0 1rem;
+        height: 80px;
+        padding: 0 2rem;
     }
 
     .nap img {
-        width: 48px;
+        width: 55px;
     }
 
-    .welcome-div {
-        padding: 2.5rem 1.5rem;
+    .home {
+        display: grid;
+        grid-template-columns: 34% 66%;
     }
 
-    .welcome-div h1 {
-        font-size: 3.5rem;
-    }
-
-    .welcome-div h2 {
-        font-size: 1rem;
-    }
-
-    .login-div {
-        padding: 2.5rem 1.5rem;
-    }
-
-    .login-div h1 {
-        font-size: 2.4rem;
+    .left-div {
+        display: block;
+        background-image:
+            linear-gradient(to bottom, var(--color-600), var(--color-950)),
+            url("../img/CCTV Security.jpg");
+        background-size: cover;
+        background-position: center;
+        background-blend-mode: multiply;
     }
 
     .cameras {
-        padding: 1.5rem;
+        padding: 3rem;
     }
 
-    .cameras h1 {
-        font-size: 3rem;
-    }
-
-    .cam-add-main {
-        padding: 1rem;
-    }
-
-    .form-container {
-        padding: 1.5rem;
+    .cam {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
     }
 
     .video {
-        padding: 1rem;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cam-cont {
+        width: 100%;
+        max-width: 900px;
+    }
+
+    .cam-cont img {
+        max-height: 75vh;
+        object-fit: contain;
     }
 
     .settings {
-        padding: 2rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 3rem;
+        border-top: none;
+        border-left: 1px solid var(--border);
     }
 
-    .alertas-div {
-        padding: 2rem 1rem;
+    .settings form {
+        width: min(100%, 480px);
     }
 
     .galeria {
-        grid-template-columns: 1fr;
-    }
-
-    .alerta img {
-        height: 220px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .cam-add {
-        right: 1rem;
-        bottom: 1rem;
+        width: 58px;
+        height: 58px;
+        right: 2rem;
+        bottom: 2rem;
+        font-size: 2rem;
+    }
 
-        width: 52px;
-        height: 52px;
+    #back {
+        right: 2rem;
+        bottom: 6rem;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    .cameras h1 {
+        font-size: 3.25rem;
+    }
+
+    .alertas-div h1 {
+        font-size: 3rem;
     }
 }

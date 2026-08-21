@@ -1,109 +1,26 @@
-{% load static %}
+{% extends 'users/base.html' %}
 
-<!DOCTYPE html>
-<html lang="es">
+{% block title %}Galería de {{ camara.nombre }} | IRIS{% endblock %}
 
-<head>
+{% block content %}
+<div class="alertas-div">
+    <h1>Galería de {{ camara.nombre }}</h1>
+    <a href="{% url 'home' %}">← Volver</a>
 
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Galería - {{ camara.nombre }}
-    </title>
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/style.css' %}"
-    >
-
-</head>
-
-<body class="inter-font">
-
-    <div class="nap">
-
-        <img
-            src="{% static 'img/logo.png' %}"
-            alt="Logo"
-        >
-
-    </div>
-
-
-    <div class="cameras">
-
-        <h1>
-            Galería de {{ camara.nombre }}
-        </h1>
-
-        <a href="{% url 'home' %}">
-            ← Volver
-        </a>
-
-        {% if alertas %}
-
-            <div class="card-cont">
-
-                {% for alerta in alertas %}
-
-                    {% if alerta.imagen %}
-
-                        <div class="camara-card">
-
-                            <img
-                                src="{{ alerta.imagen.url }}"
-                                alt="{{ alerta.tipo_deteccion }}"
-                                width="300"
-                            >
-
-                            <h3>
-                                {{ alerta.tipo_deteccion }}
-                            </h3>
-
-                            <p>
-                                Detectado:
-                                {{ alerta.fecha_deteccion|date:"d/m/Y H:i:s" }}
-                            </p>
-
-                        </div>
-
-                    {% endif %}
-
-                {% endfor %}
-
-            </div>
-
-        {% else %}
-
-            <p>
-                No hay detecciones registradas
-                para esta cámara.
-            </p>
-
-        {% endif %}
-
-    </div>
-
-</body>
-</html>
+    {% if alertas %}
+        <div class="galeria">
+            {% for alerta in alertas %}
+                {% if alerta.imagen %}
+                <div class="alerta">
+                    <img src="{{ alerta.imagen.url }}" alt="{{ alerta.tipo_deteccion }}">
+                    <h3>{{ alerta.tipo_deteccion }}</h3>
+                    <p>Detectado: {{ alerta.fecha_deteccion|date:"d/m/Y H:i:s" }}</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay detecciones registradas para esta cámara.</p>
+    {% endif %}
+</div>
+{% endblock %}

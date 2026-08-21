@@ -151,17 +151,6 @@ Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF
 **Última actualización:** 20/08/26
 **Misión de hoy:** Fase 3 — cerrada
 
-**Fase 3 completada:**
-- Repositorio auditado y limpiado: `db.sqlite3` destrackeado, modelo `CameraImage` eliminado (con migración), template huérfano `galeria.html` eliminado, `training_runs/detect/train27/` (run pre-Fase 2) eliminado, `entrenar_modelo.py` eliminado (pre-YOLOv11)
-- `detection.py`: `MODEL_PATH` corregido, resuelve `ml_models/weapons_v1/best.pt` vía `BASE_DIR`
-- `ml_models/weapons_v1/best.pt` actualizado al resultado real de Fase 2 (tenía un peso pre-Fase 2 desactualizado)
-- `train.py`: `PROJECT`, `BASE_MODEL` y `DATA_YAML` anclados a `BASE_DIR`
-- `yolo11s.pt` reubicado a `ml_models/pretrained/`
-- `.gitignore` actualizado (`*.pt` sueltos, `ml_models/pretrained/`, `runs/`) y aplicado al remoto
-- Métricas de `iris_v1_yolo11s_960-2` (run real de Fase 2, quedó anidado en `runs/` por un bug de ruta relativa ya corregido) rescatadas a `training_runs/detect/`
-- `runs/` eliminado por completo
-- `README.md` y este documento reescritos con la estructura real verificada
-
 **Pendiente: **
 
-CHANGELOG: train.py — DATA_YAML corregido a datasets/iris.v1i.yolov11/data.yaml. | README.md — reescrito completo con estructura real post-Fase 3 y arquitectura de modelos. | AI_CONTEXT.md — Secciones 2, 3, 4, 6 y 9 actualizadas al estado real verificado.
+CHANGELOG: static/css/style.css — reescrito completo mobile-first (base = mobile, min-width breakpoints) con la paleta --color-50..950 de la Sección 5 en lugar de amarillo/rojo/skyblue; eliminado bloque .login-div duplicado y @import de fuente redundante. | users/templates/users/base.html — nuevo template base (nav + bloques title/content) que elimina el boilerplate repetido. | home.html, cam.html, nueva_camara.html, alertas.html, test_model.html — migrados a extends de base.html, lang="es" y títulos reales vía base; alertas.html pasa a usar sus propias clases .alertas-div/.galeria/.alerta en vez de las de home; test_model.html ahora muestra {{ error }}; cam.html saca el <title> inválido del body. | login.html — quitado el panel de registro promocionado (Admin único) y ahora renderiza los messages de error del login, que antes no se mostraban. | register.html — layout de tarjeta única, sigue accesible solo para el bootstrap del Admin. | users/views/auth_views.py — register_view cierra el registro público una vez que existe un usuario.

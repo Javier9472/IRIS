@@ -1,31 +1,17 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="inter-font">
-  {% block content %}
+{% extends 'users/base.html' %}
 
-  <div class="nap">
-            <img src="{% static 'img/logo.png' %}" alt="">
-  </div>
+{% block title %}Nueva cámara | IRIS{% endblock %}
 
-  <div class="cam-add-main">
+{% block content %}
+<div class="cam-add-main">
     <div class="form-container">
-      <h2>Agregar Nueva Cámara</h2>
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar Cámara</button>
-      </form>
-      <a href="{% url 'home' %}">⬅ Volver a la lista</a>
+        <h2>Agregar Nueva Cámara</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Guardar Cámara</button>
+        </form>
+        <a href="{% url 'home' %}">⬅ Volver a la lista</a>
     </div>
-  </div>
-
-  {% endblock %}
-</body>
-</html>
+</div>
+{% endblock %}

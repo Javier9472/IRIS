@@ -1,103 +1,40 @@
+{% extends 'users/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Iniciar sesión | IRIS{% endblock %}
 
-    <title>Iniciar sesión | Iris</title>
+{% block nav %}{% endblock %}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{% block content %}
+<main class="auth-page">
+    <div class="auth-card">
+        <img src="{% static 'img/logo.png' %}" alt="IRIS">
+        <h1>Iniciar sesión</h1>
+        <p class="auth-subtitle">Accedé al panel de vigilancia.</p>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+        {% if messages %}
+            <ul class="errorlist">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
+        <form method="post">
+            {% csrf_token %}
 
-<body class="inter-font">
+            <div class="info-box">
+                <input type="text" name="username" placeholder="Usuario" autocomplete="username" required>
+            </div>
 
-    <main class="main-div-log">
+            <div class="info-box">
+                <input type="password" name="password" placeholder="Contraseña" autocomplete="current-password" required>
+            </div>
 
-        <!-- PANEL DE BIENVENIDA -->
-        <section class="welcome-div">
-
-            <img
-                src="{% static 'img/logo.png' %}"
-                alt="Logo de Iris"
-            >
-
-            <h1>Bienvenido</h1>
-
-            <h2>
-                Regístrate para acceder a la forma más inteligente
-                de seguridad.
-            </h2>
-
-            <a href="{% url 'register' %}">
-                <button type="button">
-                    Registrate
-                </button>
-            </a>
-
-        </section>
-
-
-        <!-- PANEL DE LOGIN -->
-        <section class="login-div">
-
-            <form method="post">
-
-                {% csrf_token %}
-
-                <h1>Iniciar sesión</h1>
-
-                <!-- USUARIO -->
-                <div class="info-box">
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Usuario"
-                        autocomplete="username"
-                        required
-                    >
-                </div>
-
-                <!-- CONTRASEÑA -->
-                <div class="info-box">
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Contraseña"
-                        autocomplete="current-password"
-                        required
-                    >
-                </div>
-
-                <!-- BOTÓN -->
-                <div class="container-btn">
-                    <button
-                        type="submit"
-                        class="btn"
-                    >
-                        Iniciar sesión
-                    </button>
-                </div>
-
-                <!-- OLVIDÉ MI CONTRASEÑA -->
-                <small>
-                    Olvidé mi contraseña
-                </small>
-
-            </form>
-
-        </section>
-
-    </main>
-
-</body>
-</html>
+            <div class="container-btn">
+                <button type="submit" class="btn-primary">Iniciar sesión</button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

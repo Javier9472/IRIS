@@ -1,24 +1,35 @@
 """
-Vistas de autenticación: registro, login y logout.
+Vistas de autenticación: registro (solo bootstrap del Admin único), login y logout.
 """
 
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
+from django.shortcuts import render, redirect
 
 from ..forms import CustomUserCreationForm
 
 
 # ============================================================
-# REGISTRO
+# REGISTRO — solo habilitado para crear el Admin único (bootstrap)
 # ============================================================
 
 def register_view(request):
 
-    # Si ya está conectado, vuelve al home
     if request.user.is_authenticated:
         return redirect('home')
+
+    # IRIS no es multiusuario: una vez que existe un Admin,
+    # el registro público queda cerrado.
+    if User.objects.exists():
+
+        messages.error(
+            request,
+            'El registro está cerrado: IRIS ya tiene un Admin configurado.'
+        )
+
+        return redirect('login')
 
     if request.method == 'POST':
 
@@ -33,8 +44,6 @@ def register_view(request):
                 'Cuenta creada correctamente. Ahora inicia sesión.'
             )
 
-            # IMPORTANTE:
-            # NO hacemos login automático.
             return redirect('login')
 
         messages.error(
@@ -66,15 +75,8 @@ def login_view(request):
 
     if request.method == 'POST':
 
-        username = request.POST.get(
-            'username',
-            ''
-        ).strip()
-
-        password = request.POST.get(
-            'password',
-            ''
-        )
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
 
         user = authenticate(
             request,
@@ -84,10 +86,7 @@ def login_view(request):
 
         if user is not None:
 
-            login(
-                request,
-                user
-            )
+            login(request, user)
 
             return redirect('home')
 
