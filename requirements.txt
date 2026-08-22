@@ -5,6 +5,7 @@ Django>=5.2,<6.0
 ultralytics>=8.3
 opencv-python>=4.9
 Pillow>=10.0
+python-dotenv>=1.0
 
 # --- IMPORTANTE sobre la GPU en Windows ---
 # `ultralytics` instala una versión de PyTorch por defecto que en Windows

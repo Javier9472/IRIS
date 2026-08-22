@@ -8,7 +8,18 @@
         <div>
             <h2>Stream de {{ camara.nombre }}</h2>
             <div class="cam-cont">
-                <img src="{% url 'video_feed' camara.id %}" alt="Stream de {{ camara.nombre }}">
+                <img
+                    id="cam-stream"
+                    data-stream-url="{% url 'video_feed' camara.id %}"
+                    src="{% url 'video_feed' camara.id %}"
+                    alt="Stream de {{ camara.nombre }}"
+                    onerror="iniciarReintentoStream()"
+                    onload="ocultarErrorStream()"
+                >
+                <div class="cam-error" id="cam-error" hidden>
+                    <p>Cámara no disponible</p>
+                    <button type="button" onclick="reintentarStreamManual()">Reintentar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -38,4 +49,42 @@
 
 <a href="{% url 'home' %}" class="cam-add" id="back">←</a>
 <a href="{% url 'ver_alertas' camara.id %}" class="cam-add">🖼️</a>
+
+<script>
+(function () {
+    var RETRY_DELAY_MS = 3000;
+    var retryTimeout = null;
+
+    function mostrarError() {
+        document.getElementById('cam-error').hidden = false;
+        document.getElementById('cam-stream').style.display = 'none';
+    }
+
+    function ocultarError() {
+        document.getElementById('cam-error').hidden = true;
+        document.getElementById('cam-stream').style.display = '';
+    }
+
+    function recargarStream() {
+        var img = document.getElementById('cam-stream');
+        img.src = img.dataset.streamUrl + '?t=' + Date.now();
+    }
+
+    window.iniciarReintentoStream = function () {
+        mostrarError();
+        clearTimeout(retryTimeout);
+        retryTimeout = setTimeout(recargarStream, RETRY_DELAY_MS);
+    };
+
+    window.ocultarErrorStream = function () {
+        clearTimeout(retryTimeout);
+        ocultarError();
+    };
+
+    window.reintentarStreamManual = function () {
+        clearTimeout(retryTimeout);
+        recargarStream();
+    };
+})();
+</script>
 {% endblock %}

@@ -36,66 +36,70 @@
 ## 4. Estructura de carpetas
 
 IRIS/
+├── .env                                # no versionado
+├── .env.example
 ├── .gitignore
 ├── AI_CONTEXT.md
 ├── README.md
-├── db.sqlite3 # no versionado
+├── db.sqlite3                          # no versionado
 ├── manage.py
 ├── requirements.txt
 ├── train.py
-├── yolo26n.pt # origen sin confirmar (Sección 9)
-│
-├── datasets/
-│ ├── iris.v1i.yolov11/ # dataset activo: train/, valid/, data.yaml
-│ └── merge_and_clean.py
+│                                       
+├── datasets/                            # no versionado
+│   ├── iris.v1i.yolov11/               # dataset activo: train/, valid/, data.yaml
+│   └── merge_and_clean.py
 │
 ├── eye/
-│ ├── init.py
-│ ├── settings.py
-│ ├── urls.py
-│ ├── asgi.py
-│ └── wsgi.py
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
 │
 ├── logs/
-│ └── iris.log # rotativo, no versionado
+│   └── iris.log                        # rotativo, no versionado
 │
-├── media/ # no versionado
+├── media/
+│   └── alertas/                        # no versionado
 │
 ├── ml_models/
-│ ├── weapons_v1/best.pt # producción — SÍ versionado
-│ └── pretrained/yolo11s.pt # checkpoint base — no versionado
+│   ├── weapons_v1/best.pt              # producción — sí versionado
+│   └── pretrained/                     # no versionado
 │
 ├── static/
-│ ├── css/style.css
-│ └── img/
+│   ├── css/style.css
+│   └── img/
 │
 ├── training_runs/
-│ └── detect/iris_v1_yolo11s_960-2/ # métricas Fase 2, sin weights/
+│   └── detect/iris_v1_yolo11s_960-2/   # métricas Fase 2, sin weights/
 │
 └── users/
-├── init.py
-├── admin.py
-├── apps.py
-├── forms.py
-├── models.py # Camera, Alerta
-├── tests.py
-├── urls.py
-├── management/commands/ # vacío — entrenar_modelo.py eliminado
-├── migrations/
-├── templates/users/
-│ ├── alertas.html
-│ ├── cam.html
-│ ├── home.html
-│ ├── login.html
-│ ├── nueva_camara.html
-│ ├── register.html
-│ └── test_model.html
-└── views/
-├── init.py
-├── auth_views.py
-├── camera_views.py
-├── detection.py
-└── test_views.py
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── forms.py
+    ├── models.py                       # Camera, Alerta
+    ├── tests.py
+    ├── urls.py
+    ├── management/commands/
+    │   └── limpiar_alertas_vencidas.py
+    ├── migrations/
+    ├── templates/users/
+    │   ├── alertas.html
+    │   ├── base.html
+    │   ├── cam.html
+    │   ├── home.html
+    │   ├── login.html
+    │   ├── nueva_camara.html
+    │   ├── register.html
+    │   └── test_model.html
+    └── views/
+        ├── __init__.py
+        ├── auth_views.py
+        ├── camera_views.py
+        ├── detection.py
+        └── test_views.py
 
 
 ## 5. Convenciones de diseño (UI)
@@ -126,7 +130,7 @@ Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF
 | 1 | Reorganización de carpetas/estructura (views modulares, logging, rutas de pesos) | ✅ Completada |
 | 2 | Reentrenar el modelo (dataset propio, limpiar clases sucias `'0'`, `'1'`, `'crash'`, mayor resolución, YOLOv11s) | ✅ Completada |
 | 3 | Borrar y organizar repositorio de código inútil o restos antiguos | ✅ Completada |
-| 4 | Refactor UI/CSS mobile-first + autenticación de Admin único | ⏳ Pendiente |
+| 4 | Refactor UI/CSS mobile-first + autenticación de Admin único | ✅ Completada |
 | 5 | Cámara vía celular por QR (token de un solo uso, `getUserMedia`, envío de frames) + explorar acceso remoto por internet sin estar en la misma red Wi-Fi | ⏳ Pendiente |
 
 ## 7. Decisiones ya tomadas (no volver a preguntar)
@@ -148,9 +152,18 @@ Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF
 
 ## 9. Estado actual / Misión activa
 
-**Última actualización:** 20/08/26
-**Misión de hoy:** Fase 3 — cerrada
+**Última actualización:** 22/08/26
+**Misión de hoy:** Fase 4 cerrada. Arranca Fase 5 — cámara vía celular por QR + acceso remoto por túnel.
 
-**Pendiente: **
+**Pendiente (en orden):**
+1. `Camera`: añadir campos `type` (`local`, `ip`, `mobile_qr`) y `token_auth` + migración (Sección 3, deuda ya identificada).
+2. Vista/endpoint para generar el QR con token de un solo uso, asociado a una `Camera` `type=mobile_qr`.
+3. Página móvil (`getUserMedia`) que el celular abre al escanear el QR, para capturar frames y enviarlos al backend — se integra en `generar_stream()` sin tocar el motor de detección (Sección 3, no romper).
+4. Invalidar el token tras el primer uso o por timeout.
+5. Configurar túnel (ngrok o Cloudflare Tunnel) para exponer el servidor fuera de la red Wi-Fi local, reutilizando `TUNNEL_DOMAIN` ya preparado en `settings.py`.
+6. Confirmar `ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` con el dominio real del túnel una vez activo (la lógica condicional ya existe, falta el valor real).
+7. Definir política de CORS si el celular sirve la página desde un origen distinto al backend (Sección 3 lo dejó pendiente para este momento).
 
-CHANGELOG: static/css/style.css — reescrito completo mobile-first (base = mobile, min-width breakpoints) con la paleta --color-50..950 de la Sección 5 en lugar de amarillo/rojo/skyblue; eliminado bloque .login-div duplicado y @import de fuente redundante. | users/templates/users/base.html — nuevo template base (nav + bloques title/content) que elimina el boilerplate repetido. | home.html, cam.html, nueva_camara.html, alertas.html, test_model.html — migrados a extends de base.html, lang="es" y títulos reales vía base; alertas.html pasa a usar sus propias clases .alertas-div/.galeria/.alerta en vez de las de home; test_model.html ahora muestra {{ error }}; cam.html saca el <title> inválido del body. | login.html — quitado el panel de registro promocionado (Admin único) y ahora renderiza los messages de error del login, que antes no se mostraban. | register.html — layout de tarjeta única, sigue accesible solo para el bootstrap del Admin. | users/views/auth_views.py — register_view cierra el registro público una vez que existe un usuario.
+**Parqueado:** ninguno.
+
+CHANGELOG: users/models.py, eye/settings.py, users/views/detection.py, users/management/commands/limpiar_alertas_vencidas.py — Cierre de Fase 4: política de retención de evidencia (TTL 90 días, campo `Alerta.relevante`, compresión JPEG 75%, comando de borrado programable).

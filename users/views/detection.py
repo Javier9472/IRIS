@@ -61,6 +61,7 @@ last_capture_times = {}
 # DETECCIÓN
 # ============================================================
 
+# users/views/detection.py — reemplaza la función detect_objects()
 def detect_objects(
     frame,
     camara_id
@@ -122,9 +123,11 @@ def detect_objects(
             >= capture_delay
         ):
 
+            # Compresión JPEG de la política de retención (Sección 9).
             success, buffer = cv2.imencode(
                 '.jpg',
-                frame
+                frame,
+                [cv2.IMWRITE_JPEG_QUALITY, settings.ALERTA_JPEG_QUALITY]
             )
 
             if success:

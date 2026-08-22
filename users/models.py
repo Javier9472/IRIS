@@ -1,3 +1,4 @@
+# users/models.py
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -19,6 +20,9 @@ class Alerta(models.Model):
     tipo_deteccion = models.CharField(max_length=100)
     fecha_deteccion = models.DateTimeField(auto_now_add=True)
     imagen = models.ImageField(upload_to='alertas/')
+    # Política de retención (AI_CONTEXT.md Sección 9): excluye la alerta
+    # del borrado automático por TTL — evidencia con denuncia activa.
+    relevante = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.tipo_deteccion} - {self.fecha_deteccion.strftime('%Y-%m-%d %H:%M:%S')}"

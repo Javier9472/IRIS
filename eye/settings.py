@@ -13,20 +13,39 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$=eqnmnta8lj9r*5d0#tc)ml=!cmjg$vkk=^808b8$y_%)84q4'
+# Rotada tras quedar expuesta en el historial de git — ahora vive solo en .env.
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+# Dominio del túnel (ngrok/Cloudflare Tunnel). Vacío en desarrollo local;
+# cuando se define, alimenta ALLOWED_HOSTS/CSRF_TRUSTED_ORIGINS acá abajo
+# y lo reutilizará la Fase 5 para el acceso remoto.
+TUNNEL_DOMAIN = os.environ.get('TUNNEL_DOMAIN', '')
+
+ALLOWED_HOSTS = [TUNNEL_DOMAIN] if TUNNEL_DOMAIN else []
+
+CSRF_TRUSTED_ORIGINS = (
+    [f'https://{TUNNEL_DOMAIN}'] if TUNNEL_DOMAIN else []
+)
+
+# En desarrollo (DEBUG=True, http local) cookies "Secure" rompen el login.
+# En producción (detrás del túnel, siempre https) deben ir marcadas Secure.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 
 # Application definition
@@ -137,6 +156,21 @@ MEDIA_ROOT = os.path.join(
 )
 
 # ============================================================
+# CACHE (rate limiting de login)
+# ============================================================
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+LOGIN_RATE_LIMIT_ATTEMPTS = 5
+LOGIN_RATE_LIMIT_WINDOW = 900  # segundos
+
+# Fase 5: activar solo cuando el túnel sea el único punto de entrada confirmado
+TRUST_PROXY_HEADERS = False
+
+# ============================================================
 # LOGGING
 # ============================================================
 # Todo lo que antes eran print() sueltos ahora pasa por acá.
@@ -174,6 +208,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
+        'iris.security': {
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
         'django': {
             'handlers': ['console', 'file'],
             'level': 'WARNING',
@@ -181,3 +220,13 @@ LOGGING = {
         },
     },
 }
+
+# eye/settings.py — agregar después del bloque MEDIA_URL/MEDIA_ROOT
+# ============================================================
+# RETENCIÓN DE EVIDENCIA (Alerta.imagen)
+# ============================================================
+# Política aprobada — AI_CONTEXT.md Sección 9. TTL sobre alertas con
+# relevante=False; las marcadas relevante=True quedan fuera (cadena
+# de custodia). Borrado real vía management command, no señal en save().
+ALERTA_RETENTION_DAYS = 90
+ALERTA_JPEG_QUALITY = 75
