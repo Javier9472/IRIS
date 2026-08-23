@@ -8,7 +8,14 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('logout/', LogoutView.as_view(next_page='login_page'), name='logout'),
 
+    path(
+        'qr/',
+        views.qr_code_view,
+        name='qr_code'
+    ),
+
     path('home/', views.home_view, name='home'),
+
 
     path(
         'nueva_camara/',
@@ -52,3 +59,4 @@ urlpatterns = [
         name='test_modelo'
     ),
 ]
+

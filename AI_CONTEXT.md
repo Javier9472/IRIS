@@ -124,21 +124,18 @@ Mobile-first estricto. CSS puro, sin librerías externas.
 Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF` o `--color-50`.
 
 ## 6. Roadmap y estado
+Fase	Descripción	Estado
+1	Reorganización de carpetas/estructura (views modulares, logging, rutas de pesos)	✅ Completada
+2	Reentrenar el modelo (dataset propio, limpiar clases sucias '0', '1', 'crash', mayor resolución, YOLOv11s)	✅ Completada
+3	Borrar y organizar repositorio de código inútil o restos antiguos	✅ Completada
+4	Refactor UI/CSS mobile-first + autenticación de Admin único	✅ Completada
+5	Acceso remoto al dashboard vía celular por QR (el celular es solo visor del stream ya procesado, no captura video) usando Tailscale Funnel	✅ Completada
 
-| Fase | Descripción | Estado |
-|---|---|---|
-| 1 | Reorganización de carpetas/estructura (views modulares, logging, rutas de pesos) | ✅ Completada |
-| 2 | Reentrenar el modelo (dataset propio, limpiar clases sucias `'0'`, `'1'`, `'crash'`, mayor resolución, YOLOv11s) | ✅ Completada |
-| 3 | Borrar y organizar repositorio de código inútil o restos antiguos | ✅ Completada |
-| 4 | Refactor UI/CSS mobile-first + autenticación de Admin único | ✅ Completada |
-| 5 | Cámara vía celular por QR (token de un solo uso, `getUserMedia`, envío de frames) + explorar acceso remoto por internet sin estar en la misma red Wi-Fi | ⏳ Pendiente |
-
-## 7. Decisiones ya tomadas (no volver a preguntar)
-
-- Sin sistema multiusuario: un solo Admin.
-- El celular se integra como cámara vía **QR + navegador** (la ruta por app tipo IP Webcam sigue funcionando como fallback, no se elimina).
-- El acceso remoto sin misma red Wi-Fi requerirá túnel (ngrok/Cloudflare Tunnel) — la config de red y CORS debe quedar lista para eso.
-- Python 3.11, Django 5.2.
+## 7. Decisiones ya tomadas (no volver a preguntar) 
+Sin sistema multiusuario: un solo Admin.
+El celular se integra como cámara vía QR + navegador (la ruta por app tipo IP Webcam sigue funcionando como fallback, no se elimina).
+El acceso remoto sin misma red Wi-Fi requerirá túnel (ngrok/Cloudflare Tunnel) — la config de red y CORS debe quedar lista para eso.
+Python 3.11, Django 5.2.
 
 ## 8. Reglas de trabajo para la IA
 
@@ -151,19 +148,13 @@ Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF
 - Pide los archivos que necesitas.
 
 ## 9. Estado actual / Misión activa
+Última actualización: 22/08/26
 
-**Última actualización:** 22/08/26
-**Misión de hoy:** Fase 4 cerrada. Arranca Fase 5 — cámara vía celular por QR + acceso remoto por túnel.
+Fase 5: ✅ Completada y probada. Acceso remoto vía QR + Tailscale Funnel funcionando
+(login, ambas cámaras y galería verificados desde celular por datos móviles).
 
-**Pendiente (en orden):**
-1. `Camera`: añadir campos `type` (`local`, `ip`, `mobile_qr`) y `token_auth` + migración (Sección 3, deuda ya identificada).
-2. Vista/endpoint para generar el QR con token de un solo uso, asociado a una `Camera` `type=mobile_qr`.
-3. Página móvil (`getUserMedia`) que el celular abre al escanear el QR, para capturar frames y enviarlos al backend — se integra en `generar_stream()` sin tocar el motor de detección (Sección 3, no romper).
-4. Invalidar el token tras el primer uso o por timeout.
-5. Configurar túnel (ngrok o Cloudflare Tunnel) para exponer el servidor fuera de la red Wi-Fi local, reutilizando `TUNNEL_DOMAIN` ya preparado en `settings.py`.
-6. Confirmar `ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` con el dominio real del túnel una vez activo (la lógica condicional ya existe, falta el valor real).
-7. Definir política de CORS si el celular sirve la página desde un origen distinto al backend (Sección 3 lo dejó pendiente para este momento).
+Pendiente: al terminar el uso (~1 mes), desactivar el Funnel
+(tailscale funnel off / tailscale down) — sin costo ni compromiso de continuidad.
 
-**Parqueado:** ninguno.
-
-CHANGELOG: users/models.py, eye/settings.py, users/views/detection.py, users/management/commands/limpiar_alertas_vencidas.py — Cierre de Fase 4: política de retención de evidencia (TTL 90 días, campo `Alerta.relevante`, compresión JPEG 75%, comando de borrado programable).
+CHANGELOG: .env — se agregó TUNNEL_DOMAIN con el dominio de Tailscale Funnel
+(laptop-fnn67m42.tail81ea30.ts.net); Fase 5 probada end-to-end.

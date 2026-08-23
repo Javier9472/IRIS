@@ -172,7 +172,6 @@ def generar_stream(
     camara_id
 ):
 
-# Cámara local del PC o múltiples USB
     if str(camara_ip).strip().isdigit():
 
         fuente = int(str(camara_ip).strip())

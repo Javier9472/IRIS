@@ -2,9 +2,14 @@
 Vistas de gestión de cámaras: alta, baja, panel en vivo, stream y alertas.
 """
 
+import io
+
+import qrcode
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import StreamingHttpResponse, JsonResponse
+from django.http import StreamingHttpResponse, JsonResponse, HttpResponse
+from django.urls import reverse
 
 from ..forms import CameraForm, CameraSettingsForm
 from ..models import Camera, Alerta
@@ -29,6 +34,29 @@ def home_view(request):
         {
             'camaras': camaras
         }
+    )
+
+
+# ============================================================
+# QR DE ACCESO REMOTO
+# ============================================================
+
+@login_required(login_url='login')
+def qr_code_view(request):
+
+    if settings.TUNNEL_DOMAIN:
+        url = f'https://{settings.TUNNEL_DOMAIN}{reverse("login_page")}'
+    else:
+        url = request.build_absolute_uri(reverse('login_page'))
+
+    imagen = qrcode.make(url)
+
+    buffer = io.BytesIO()
+    imagen.save(buffer, format='PNG')
+
+    return HttpResponse(
+        buffer.getvalue(),
+        content_type='image/png'
     )
 
 

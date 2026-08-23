@@ -36,7 +36,9 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 # y lo reutilizará la Fase 5 para el acceso remoto.
 TUNNEL_DOMAIN = os.environ.get('TUNNEL_DOMAIN', '')
 
-ALLOWED_HOSTS = [TUNNEL_DOMAIN] if TUNNEL_DOMAIN else []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+if TUNNEL_DOMAIN:
+    ALLOWED_HOSTS.append(TUNNEL_DOMAIN)
 
 CSRF_TRUSTED_ORIGINS = (
     [f'https://{TUNNEL_DOMAIN}'] if TUNNEL_DOMAIN else []

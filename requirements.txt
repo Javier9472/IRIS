@@ -6,6 +6,8 @@ ultralytics>=8.3
 opencv-python>=4.9
 Pillow>=10.0
 python-dotenv>=1.0
+qrcode==8.2
+pillow==12.3.0
 
 # --- IMPORTANTE sobre la GPU en Windows ---
 # `ultralytics` instala una versión de PyTorch por defecto que en Windows
