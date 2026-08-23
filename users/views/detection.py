@@ -23,7 +23,7 @@ from ultralytics import YOLO
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
-
+from . import facial_views
 from ..models import Camera, Alerta
 
 logger = logging.getLogger(__name__)
@@ -62,6 +62,8 @@ last_capture_times = {}
 # ============================================================
 
 # users/views/detection.py — reemplaza la función detect_objects()
+
+# users/views/detection.py — reemplaza la función detect_objects()
 def detect_objects(
     frame,
     camara_id
@@ -86,6 +88,7 @@ def detect_objects(
     )
 
     nombres_detectados = []
+    detecciones_arma = []
 
     if boxes is not None and len(boxes) > 0:
 
@@ -108,6 +111,13 @@ def detect_objects(
             nombres_detectados.append(
                 class_name
             )
+
+            detecciones_arma.append({
+                'tipo': class_name,
+                'confianza': float(box.conf[0].item())
+            })
+
+    alertas_creadas = []
 
     if nombres_detectados:
 
@@ -156,12 +166,28 @@ def detect_objects(
                         save=True
                     )
 
+                    alertas_creadas.append(alerta)
+
                 last_capture_times[
                     camara_id
                 ] = current_time
 
-    return result.plot()
+    # Fase 6: pipeline facial opcional, hermano del motor de armas.
+    # Un fallo acá (import, sin GPU, sin rostro) nunca debe interrumpir
+    # el stream de detección.
+    try:
+        facial_views.procesar_frame_facial(
+            frame,
+            camara_id,
+            detecciones_arma,
+            alertas_creadas
+        )
+    except Exception:
+        logger.exception(
+            f"Cámara {camara_id}: fallo en pipeline facial, se omite este frame"
+        )
 
+    return result.plot()
 
 # ============================================================
 # STREAM DE CÁMARA

@@ -59,4 +59,3 @@ urlpatterns = [
         name='test_modelo'
     ),
 ]
-

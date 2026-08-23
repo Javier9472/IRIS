@@ -232,3 +232,9 @@ LOGGING = {
 # de custodia). Borrado real vía management command, no señal en save().
 ALERTA_RETENTION_DAYS = 90
 ALERTA_JPEG_QUALITY = 75
+
+# eye/settings.py — agregar junto a ALERTA_JPEG_QUALITY
+FACIAL_SIMILITUD_MINIMA = 0.5  # umbral de similitud coseno para match facial
+
+# eye/settings.py — agregar junto a FACIAL_SIMILITUD_MINIMA
+FACIAL_COOLDOWN_SECONDS = 5  # segundos mínimos entre AlertaFacial para la misma persona+cámara

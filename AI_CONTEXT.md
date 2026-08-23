@@ -9,7 +9,6 @@
 **Qué es:** Sistema de vigilancia con visión artificial. Uso personal, construido con estándar de portafolio profesional.
 **Alcance v1.0 (prioridad actual):** Detección de armas de fuego, armas blancas y fuego.
 **Alcance futuro (dejar la arquitectura preparada, NO construir todavía):**
-- Reconocimiento facial (búsqueda y captura)
 - Identificación de patrones de robo
 - Reporte final en PDF para entrega a servicios policiales
 
@@ -17,6 +16,7 @@
 
 - Backend: Python 3.11, Django 5.2
 - IA: YOLOv11s (Ultralytics) — dataset propio, migración completada en Fase 2
+- Reconocimiento facial (Fase 6): InsightFace (ArcFace), embeddings precalculados, similitud coseno
 - Base de datos: SQLite (solo eventos/alertas, sin sistema multiusuario)
 - Frontend: HTML + CSS puro, sin frameworks, mobile-first
 - Autenticación: `django.contrib.auth`, en transición a un solo Admin
@@ -24,14 +24,15 @@
 
 ## 3. Arquitectura actual — NO ROMPER
 
-- `generar_stream()` es la función núcleo: obtiene frames (cámara local, IP, o próximamente celular) y los pasa a `detect_objects()`. Toda fuente de video nueva se integra ahí, sin tocar el motor de detección.
-- Vistas modularizadas en `users/views/`: `auth_views.py`, `camera_views.py`, `detection.py`, `test_views.py`. `urls.py` no cambia.
+- `generar_stream()` es la función núcleo: obtiene frames (cámara local, IP, o celular vía QR) y los pasa a `detect_objects()`. Toda fuente de video nueva se integra ahí, sin tocar el motor de detección.
+- Vistas modularizadas en `users/views/`: `auth_views.py`, `camera_views.py`, `detection.py`, `facial_views.py`, `test_views.py`. `urls.py` no cambia.
 - Modelo `Camera`: ya soporta `intervalo_captura` y `certeza_minima` por cámara. Falta añadir `type` (local, ip, mobile_qr) y `token_auth`.
 - Modelo `Alerta`: es el log de eventos (imagen + tipo + fecha por detección) — es la fuente para el futuro PDF. No almacena confianza por detección, solo el umbral `certeza_minima` a nivel de cámara.
 - Pesos entrenados: `ml_models/weapons_v1/best.pt`. `detection.py` lo resuelve vía `BASE_DIR`, no por ruta hardcodeada — no depende de dónde se ejecute `manage.py`.
 - Entrenamiento: `train.py` tiene `DATA_YAML`, `BASE_MODEL` y `PROJECT` anclados a `BASE_DIR` (no rutas relativas ni strings sueltos). Escribe en `training_runs/`; el mejor checkpoint se promueve a producción a mano, no automáticamente.
 - Logging real en `logs/iris.log` (rotativo) + consola, vía el módulo `logging`.
-- No tocar configuración de CORS, estáticos o red: serán necesarios cuando el sistema se exponga a internet (túnel tipo ngrok / Cloudflare Tunnel).
+- Acceso remoto (Fase 5): Tailscale Funnel, verificado desde celular por datos móviles. No tocar configuración de CORS ni estáticos salvo que se pida explícitamente.
+- Pipeline facial (Fase 6): `facial_views.procesar_frame_facial()` se invoca desde dentro de `detect_objects()` (no desde `generar_stream()` directamente), envuelto en `try/except` — un fallo del pipeline facial (import, sin GPU, sin rostro) nunca interrumpe el stream de detección de armas.
 
 ## 4. Estructura de carpetas
 
@@ -65,6 +66,7 @@ IRIS/
 │
 ├── ml_models/
 │   ├── weapons_v1/best.pt              # producción — sí versionado
+│   ├── facial_v1/                      # embeddings de referencia (Fase 6) — no versionado
 │   └── pretrained/                     # no versionado
 │
 ├── static/
@@ -79,7 +81,7 @@ IRIS/
     ├── admin.py
     ├── apps.py
     ├── forms.py
-    ├── models.py                       # Camera, Alerta
+    ├── models.py                       # Camera, Alerta, PersonaBuscada, AlertaFacial (Fase 6)
     ├── tests.py
     ├── urls.py
     ├── management/commands/
@@ -99,6 +101,7 @@ IRIS/
         ├── auth_views.py
         ├── camera_views.py
         ├── detection.py
+        ├── facial_views.py             # Fase 6
         └── test_views.py
 
 
@@ -108,7 +111,7 @@ Mobile-first estricto. CSS puro, sin librerías externas.
 
 ```css
 :root {
-  --color-50: #EFF6FF;
+  --color-50:  #EFF6FF;
   --color-100: #DBEAFE;
   --color-200: #BEDBFF;
   --color-300: #8EC5FF;
@@ -130,12 +133,20 @@ Fase	Descripción	Estado
 3	Borrar y organizar repositorio de código inútil o restos antiguos	✅ Completada
 4	Refactor UI/CSS mobile-first + autenticación de Admin único	✅ Completada
 5	Acceso remoto al dashboard vía celular por QR (el celular es solo visor del stream ya procesado, no captura video) usando Tailscale Funnel	✅ Completada
+6	Reconocimiento facial de personas buscadas (modelo PersonaBuscada) + correlación con detección de armas + borrado manual de AlertaFacial vía Django Admin	✅ Completada
 
 ## 7. Decisiones ya tomadas (no volver a preguntar) 
 Sin sistema multiusuario: un solo Admin.
 El celular se integra como cámara vía QR + navegador (la ruta por app tipo IP Webcam sigue funcionando como fallback, no se elimina).
 El acceso remoto sin misma red Wi-Fi requerirá túnel (ngrok/Cloudflare Tunnel) — la config de red y CORS debe quedar lista para eso.
 Python 3.11, Django 5.2.
+
+**Fase 6 — decisiones de diseño:**
+- Modelo nuevo `PersonaBuscada` (nombre, foto de referencia, embedding precalculado), separado de `Camera` y `Alerta` — no las modifica.
+- Pipeline: detección de rostro → embedding vía InsightFace (ArcFace) → comparación por similitud coseno contra embeddings de `PersonaBuscada` → umbral configurable (`similitud_minima`, análogo a `certeza_minima` de `Camera`).
+- Integración: módulo `users/views/facial_views.py`, invocado desde dentro de `detect_objects()` en `detection.py` (no desde `generar_stream()` directamente), envuelto en `try/except` para que un fallo del pipeline facial nunca interrumpa el stream de detección de armas.
+- Correlación arma-persona: si en el mismo frame `detect_objects()` reporta un arma y `facial_views` reporta un match sobre el umbral, se registra un evento combinado.
+- Pruebas: solo 2 rostros de prueba consentidos (equipo). RENIEC/PNP no se integran técnicamente en el sistema — quedan únicamente como el caso de uso ideal narrado en el informe/portafolio.
 
 ## 8. Reglas de trabajo para la IA
 
@@ -148,12 +159,20 @@ Python 3.11, Django 5.2.
 - Pide los archivos que necesitas.
 
 ## 9. Estado actual / Misión activa
-Última actualización: 22/08/26
+Última actualización: 23/08/26
 
-Fase 5: ✅ Completada y probada. Acceso remoto vía QR + Tailscale Funnel funcionando
-(login, ambas cámaras y galería verificados desde celular por datos móviles).
+**Fase 5:** ✅ Completada y probada (login, cámaras y galería verificados desde celular por datos móviles vía Tailscale Funnel).
+Pendiente aparte: al terminar el uso (~1 mes desde el 22/08/26), desactivar el Funnel (`tailscale funnel off` / `tailscale down`) — sin costo ni compromiso de continuidad.
 
-Pendiente: al terminar el uso (~1 mes), desactivar el Funnel
-(tailscale funnel off / tailscale down) — sin costo ni compromiso de continuidad.
+**Fase 6:** ✅ Completada por completo, cierre confirmado en esta sesión.
 
-CHANGELOG: cam.html — onerror/onload solo disparan ante un fallo de red explícito (conexión rechazada, cierre abrupto); si generar_stream() abre la conexión pero nunca entrega un frame (p. ej. IP de cámara inválida), el <img> queda "cargando" indefinidamente sin disparar ninguno de los dos eventos, dejando el recuadro vacío — consistente con lo que se ve en la captura. Se agregó un watchdog por setTimeout (8s) que fuerza iniciarReintentoStream() si no hubo onload/onerror a tiempo, y se re-arma en cada recarga; no se tocó generar_stream() ni detection.py.
+1. **Modelo `PersonaBuscada`** — ✅ en `users/models.py`.
+2. **Pipeline facial** (`facial_views.py`: `precalcular_embedding` + `procesar_frame_facial`) — ✅ implementado, con cooldown `FACIAL_COOLDOWN_SECONDS` por persona+cámara.
+3. **Enganche en el loop de frames** — ✅ confirmado en `detection.py`: `procesar_frame_facial` se llama dentro de `detect_objects()` (invocado en cada frame por `generar_stream()`), envuelto en `try/except` para que un fallo del pipeline facial no interrumpa el stream de armas.
+4. **Registro de eventos** (`AlertaFacial`, con correlación a `Alerta` de arma) — ✅ en `users/models.py`.
+5. **Alcance de pruebas**: solo 2 rostros de prueba consentidos (equipo real); sin integración técnica a RENIEC/PNP.
+6. **Borrado de `AlertaFacial`**: únicamente manual (sin limpieza automática por TTL), individual y en lote, gestionado exclusivamente desde el panel de Django Admin. Signal `post_delete` en `models.py` borra también el archivo de imagen en disco al eliminar. **Verificado funcionando en producción local por el usuario.**
+
+Nota técnica observada en `detection.py` (no crítica, ninguna acción tomada — queda para una futura sesión si se decide limpiar): `MODEL_PATH` y `model = YOLO(MODEL_PATH)` aparecen duplicados al inicio del módulo, cargando el modelo dos veces al importar.
+
+Siguiente paso: ninguno pendiente para cerrar Fase 6. Próxima misión activa por definir por el usuario — candidatos según Sección 1 (alcance futuro): identificación de patrones de robo, o reporte final en PDF. No se adelanta ninguna sin instrucción explícita.
