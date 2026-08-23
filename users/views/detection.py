@@ -43,8 +43,6 @@ MODEL_PATH = os.path.join(
 
 model = YOLO(MODEL_PATH)
 
-model = YOLO(MODEL_PATH)
-
 # Antes estaba fijo en "cpu". Si hay GPU disponible (CUDA), la usamos:
 # la inferencia por frame es varias veces más rápida, lo que importa
 # mucho en un stream en vivo.

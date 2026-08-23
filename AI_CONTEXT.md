@@ -7,16 +7,17 @@
 
 **Nombre:** IRIS — Inteligencia para Reconocimiento, Identificación y Seguridad
 **Qué es:** Sistema de vigilancia con visión artificial. Uso personal, construido con estándar de portafolio profesional.
-**Alcance v1.0 (prioridad actual):** Detección de armas de fuego, armas blancas y fuego.
+**Alcance v1.0 (base, completo):** Detección de armas de fuego, armas blancas y fuego; reconocimiento facial de personas requisitoriadas.
+**Alcance activo (Fase 7):** Reporte en PDF automático por incidente — de armas, de rostros requisitoriados, o de eventos correlacionados (arma + rostro) —, almacenado en el proyecto y accesible/descargable desde un apartado nuevo tipo galería.
 **Alcance futuro (dejar la arquitectura preparada, NO construir todavía):**
 - Identificación de patrones de robo
-- Reporte final en PDF para entrega a servicios policiales
 
 ## 2. Stack y entorno
 
 - Backend: Python 3.11, Django 5.2
 - IA: YOLOv11s (Ultralytics) — dataset propio, migración completada en Fase 2
 - Reconocimiento facial (Fase 6): InsightFace (ArcFace), embeddings precalculados, similitud coseno
+- Generación de PDF (Fase 7): **WeasyPrint** — confirmado. Requiere runtime de GTK3 instalado en Windows además de `pip install weasyprint`.
 - Base de datos: SQLite (solo eventos/alertas, sin sistema multiusuario)
 - Frontend: HTML + CSS puro, sin frameworks, mobile-first
 - Autenticación: `django.contrib.auth`, en transición a un solo Admin
@@ -27,12 +28,13 @@
 - `generar_stream()` es la función núcleo: obtiene frames (cámara local, IP, o celular vía QR) y los pasa a `detect_objects()`. Toda fuente de video nueva se integra ahí, sin tocar el motor de detección.
 - Vistas modularizadas en `users/views/`: `auth_views.py`, `camera_views.py`, `detection.py`, `facial_views.py`, `test_views.py`. `urls.py` no cambia.
 - Modelo `Camera`: ya soporta `intervalo_captura` y `certeza_minima` por cámara. Falta añadir `type` (local, ip, mobile_qr) y `token_auth`.
-- Modelo `Alerta`: es el log de eventos (imagen + tipo + fecha por detección) — es la fuente para el futuro PDF. No almacena confianza por detección, solo el umbral `certeza_minima` a nivel de cámara.
+- Modelo `Alerta`: es el log de eventos (imagen + tipo + fecha por detección) — fuente de datos para el `Incidente`/reporte PDF (Fase 7). No almacena confianza por detección, solo el umbral `certeza_minima` a nivel de cámara.
 - Pesos entrenados: `ml_models/weapons_v1/best.pt`. `detection.py` lo resuelve vía `BASE_DIR`, no por ruta hardcodeada — no depende de dónde se ejecute `manage.py`.
 - Entrenamiento: `train.py` tiene `DATA_YAML`, `BASE_MODEL` y `PROJECT` anclados a `BASE_DIR` (no rutas relativas ni strings sueltos). Escribe en `training_runs/`; el mejor checkpoint se promueve a producción a mano, no automáticamente.
 - Logging real en `logs/iris.log` (rotativo) + consola, vía el módulo `logging`.
 - Acceso remoto (Fase 5): Tailscale Funnel, verificado desde celular por datos móviles. No tocar configuración de CORS ni estáticos salvo que se pida explícitamente.
-- Pipeline facial (Fase 6): `facial_views.procesar_frame_facial()` se invoca desde dentro de `detect_objects()` (no desde `generar_stream()` directamente), envuelto en `try/except` — un fallo del pipeline facial (import, sin GPU, sin rostro) nunca interrumpe el stream de detección de armas.
+- Pipeline facial (Fase 6): `facial_views.procesar_frame_facial()` se invoca desde dentro de `detect_objects()` (no desde `generar_stream()` directamente), envuelto en `try/except` — un fallo del pipeline facial nunca interrumpe el stream de detección de armas.
+- Incidentes/Reportes PDF (Fase 7): el cierre de un incidente (y su generación de PDF) se revisa aprovechando el propio loop de frames ya existente — sin dependencias nuevas tipo Celery/scheduler. No toca `generar_stream()`, `detect_objects()` ni `procesar_frame_facial()` en su forma; se engancha igual que Fase 6, como paso adicional dentro de `detect_objects()`.
 
 ## 4. Estructura de carpetas
 
@@ -62,7 +64,8 @@ IRIS/
 │   └── iris.log                        # rotativo, no versionado
 │
 ├── media/
-│   └── alertas/                        # no versionado
+│   ├── alertas/                         # no versionado
+│   └── reportes/                        # no versionado — PDFs generados (Fase 7)
 │
 ├── ml_models/
 │   ├── weapons_v1/best.pt              # producción — sí versionado
@@ -81,7 +84,7 @@ IRIS/
     ├── admin.py
     ├── apps.py
     ├── forms.py
-    ├── models.py                       # Camera, Alerta, PersonaBuscada, AlertaFacial (Fase 6)
+    ├── models.py                       # Camera, Alerta, PersonaBuscada, AlertaFacial (Fase 6), Incidente (Fase 7)
     ├── tests.py
     ├── urls.py
     ├── management/commands/
@@ -95,6 +98,7 @@ IRIS/
     │   ├── login.html
     │   ├── nueva_camara.html
     │   ├── register.html
+    │   ├── reportes.html               # Fase 7 — galería de reportes PDF
     │   └── test_model.html
     └── views/
         ├── __init__.py
@@ -102,6 +106,7 @@ IRIS/
         ├── camera_views.py
         ├── detection.py
         ├── facial_views.py             # Fase 6
+        ├── reportes_views.py           # Fase 7
         └── test_views.py
 
 
@@ -134,6 +139,7 @@ Fase	Descripción	Estado
 4	Refactor UI/CSS mobile-first + autenticación de Admin único	✅ Completada
 5	Acceso remoto al dashboard vía celular por QR (el celular es solo visor del stream ya procesado, no captura video) usando Tailscale Funnel	✅ Completada
 6	Reconocimiento facial de personas buscadas (modelo PersonaBuscada) + correlación con detección de armas + borrado manual de AlertaFacial vía Django Admin	✅ Completada
+7	Reporte PDF automático por incidente (armas / rostros requisitoriados / eventos correlacionados) almacenado en el proyecto, con galería de descarga	🔲 Diseño cerrado — lista para implementación
 
 ## 7. Decisiones ya tomadas (no volver a preguntar) 
 Sin sistema multiusuario: un solo Admin.
@@ -142,11 +148,21 @@ El acceso remoto sin misma red Wi-Fi requerirá túnel (ngrok/Cloudflare Tunnel)
 Python 3.11, Django 5.2.
 
 **Fase 6 — decisiones de diseño:**
-- Modelo nuevo `PersonaBuscada` (nombre, foto de referencia, embedding precalculado), separado de `Camera` y `Alerta` — no las modifica.
+- Modelo `PersonaBuscada` (nombre, foto de referencia, embedding precalculado), separado de `Camera` y `Alerta` — no las modifica.
 - Pipeline: detección de rostro → embedding vía InsightFace (ArcFace) → comparación por similitud coseno contra embeddings de `PersonaBuscada` → umbral configurable (`similitud_minima`, análogo a `certeza_minima` de `Camera`).
-- Integración: módulo `users/views/facial_views.py`, invocado desde dentro de `detect_objects()` en `detection.py` (no desde `generar_stream()` directamente), envuelto en `try/except` para que un fallo del pipeline facial nunca interrumpa el stream de detección de armas.
+- Integración: módulo `users/views/facial_views.py`, invocado desde dentro de `detect_objects()` en `detection.py` (no desde `generar_stream()` directamente), envuelto en `try/except`.
 - Correlación arma-persona: si en el mismo frame `detect_objects()` reporta un arma y `facial_views` reporta un match sobre el umbral, se registra un evento combinado.
 - Pruebas: solo 2 rostros de prueba consentidos (equipo). RENIEC/PNP no se integran técnicamente en el sistema — quedan únicamente como el caso de uso ideal narrado en el informe/portafolio.
+
+**Fase 7 — decisiones de diseño (todas confirmadas):**
+- **Generación automática**, no manual: el sistema arma y guarda el PDF solo, sin que el usuario tenga que pedirlo desde la galería.
+- **Un PDF por incidente/momento continuo**, no uno por cada `Alerta`/`AlertaFacial` individual: si la misma amenaza sigue detectándose de forma continua en una cámara, todas esas detecciones se agrupan en un solo reporte.
+- **Modelo nuevo `Incidente`** en `users/models.py`: `camara` (FK), `tipo` (arma / rostro / correlacionado — se recalcula según qué eventos contiene), `hora_inicio`, `hora_fin` (nulo mientras sigue abierto), `pdf` (FileField, se llena al cerrarse), relación a las `Alerta` y `AlertaFacial` ocurridas dentro de la ventana. No modifica `Alerta` ni `AlertaFacial` existentes.
+- **Ventana de inactividad: 30 segundos** (`INCIDENTE_TIMEOUT_SECONDS = 30`). Mientras sigan llegando detecciones (arma y/o rostro) en esa cámara dentro de esos 30s, se suman al mismo `Incidente` abierto; pasado ese tiempo sin nuevas detecciones, se cierra.
+- **Revisión del cierre**: aprovechando que `detect_objects()` ya corre en cada frame del stream, ahí mismo se revisa si hay incidentes abiertos de esa cámara que ya superaron los 30s; si sí, se cierran y se dispara la generación del PDF con las `Alerta`/`AlertaFacial` acumuladas. Caveat conocido y aceptado: si el stream se corta antes de cumplirse el timeout, el incidente queda "abierto" hasta que vuelvan a llegar frames de esa cámara.
+- **Biblioteca de PDF: WeasyPrint** — reutiliza los templates HTML y la paleta de colores de la Sección 5. Requiere runtime de GTK3 instalado en Windows.
+- **Nuevo módulo** `users/views/reportes_views.py` + template `reportes.html`: galería con lista de `Incidente`s cerrados (badge de tipo, fecha/hora, botón de descarga del PDF), mismo patrón mobile-first de `alertas.html`.
+- **Almacenamiento**: `media/reportes/`, no versionado (mismo criterio que `media/alertas/`).
 
 ## 8. Reglas de trabajo para la IA
 
@@ -161,18 +177,19 @@ Python 3.11, Django 5.2.
 ## 9. Estado actual / Misión activa
 Última actualización: 23/08/26
 
-**Fase 5:** ✅ Completada y probada (login, cámaras y galería verificados desde celular por datos móviles vía Tailscale Funnel).
-Pendiente aparte: al terminar el uso (~1 mes desde el 22/08/26), desactivar el Funnel (`tailscale funnel off` / `tailscale down`) — sin costo ni compromiso de continuidad.
+Fase 5: ✅ Completada y probada (celular como visor vía Tailscale Funnel). Pendiente aparte: desactivar el Funnel (`tailscale funnel off` / `tailscale down`) al terminar el uso (~1 mes desde el 22/08/26).
 
-**Fase 6:** ✅ Completada por completo, cierre confirmado en esta sesión.
+Fase 6: ✅ Completada y cerrada. Reconocimiento facial completo, enganche confirmado en `detection.py` — verificado en producción local.
 
-1. **Modelo `PersonaBuscada`** — ✅ en `users/models.py`.
-2. **Pipeline facial** (`facial_views.py`: `precalcular_embedding` + `procesar_frame_facial`) — ✅ implementado, con cooldown `FACIAL_COOLDOWN_SECONDS` por persona+cámara.
-3. **Enganche en el loop de frames** — ✅ confirmado en `detection.py`: `procesar_frame_facial` se llama dentro de `detect_objects()` (invocado en cada frame por `generar_stream()`), envuelto en `try/except` para que un fallo del pipeline facial no interrumpa el stream de armas.
-4. **Registro de eventos** (`AlertaFacial`, con correlación a `Alerta` de arma) — ✅ en `users/models.py`.
-5. **Alcance de pruebas**: solo 2 rostros de prueba consentidos (equipo real); sin integración técnica a RENIEC/PNP.
-6. **Borrado de `AlertaFacial`**: únicamente manual (sin limpieza automática por TTL), individual y en lote, gestionado exclusivamente desde el panel de Django Admin. Signal `post_delete` en `models.py` borra también el archivo de imagen en disco al eliminar. **Verificado funcionando en producción local por el usuario.**
+**Fase 7 (MISIÓN ACTIVA): Reporte PDF automático por incidente + galería de descarga**
 
-Nota técnica observada en `detection.py` (no crítica, ninguna acción tomada — queda para una futura sesión si se decide limpiar): `MODEL_PATH` y `model = YOLO(MODEL_PATH)` aparecen duplicados al inicio del módulo, cargando el modelo dos veces al importar.
+Diseño completo y confirmado (ver Sección 7): modelo `Incidente`, ventana de 30s de inactividad para cerrar el incidente y disparar el PDF, WeasyPrint como motor de generación, galería nueva vía `reportes_views.py` + `reportes.html`.
 
-Siguiente paso: ninguno pendiente para cerrar Fase 6. Próxima misión activa por definir por el usuario — candidatos según Sección 1 (alcance futuro): identificación de patrones de robo, o reporte final en PDF. No se adelanta ninguna sin instrucción explícita.
+**Todavía no se escribió código de esta fase.** Siguiente paso: implementación.
+
+Archivos que se van a necesitar para arrancar (pedir al usuario antes de escribir código, por la regla de la Sección 8):
+- `users/models.py` (para agregar `Incidente` sin romper `Camera`, `Alerta`, `PersonaBuscada`, `AlertaFacial`)
+- `users/views/detection.py` (para enganchar la revisión de cierre de incidentes — ya se tiene la versión actual de la sesión pasada, pero conviene reconfirmar si no ha cambiado)
+- `eye/settings.py` (confirmar `MEDIA_ROOT`, `INSTALLED_APPS`, y dónde agregar la config de WeasyPrint si aplica)
+- `requirements.txt` (para agregar `weasyprint`)
+- `users/urls.py` y `users/templates/users/base.html` (para saber cómo están armadas las rutas y el menú de navegación actuales, y agregar el link a la nueva galería de reportes de forma consistente)
