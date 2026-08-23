@@ -74,6 +74,7 @@ a {
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
     background: var(--color-50);
 
@@ -88,6 +89,35 @@ a {
     object-fit: contain;
 }
 
+.logout-form {
+    display: inline-flex;
+}
+
+.logout-btn {
+    height: 38px;
+    padding: 0 1rem;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    color: var(--color-700);
+
+    border: 2px solid var(--color-200);
+    border-radius: 999px;
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: var(--color-600);
+    color: #fff;
+    border-color: var(--color-600);
+}
 
 /* =========================================================
    AUTENTICACIÓN (login / register)
@@ -436,6 +466,40 @@ a {
 
 
 /* =========================================================
+   QR 
+========================================================= */
+
+.left-div {
+    display: none;
+}
+
+.qr-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    padding: 1.75rem;
+
+    background: var(--color-50);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.qr-card .qr-code {
+    width: 180px;
+    height: 180px;
+    display: block;
+}
+
+.qr-card p {
+    color: var(--color-800);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* =========================================================
    CAM (stream + settings)
 ========================================================= */
 
@@ -749,6 +813,13 @@ a {
     .test-results {
         flex-direction: row;
     }
+
+    .logout-btn {
+    height: 42px;
+    padding: 0 1.25rem;
+    font-size: 0.9rem;
+}
+
 }
 
 @media (min-width: 900px) {
@@ -768,7 +839,9 @@ a {
     }
 
     .left-div {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background-image:
             linear-gradient(to bottom, var(--color-600), var(--color-950)),
             url("../img/CCTV Security.jpg");
@@ -796,11 +869,14 @@ a {
     .cam-cont {
         width: 100%;
         max-width: 900px;
+        min-height: 420px;
     }
-
+    
     .cam-cont img {
         max-height: 75vh;
         object-fit: contain;
+        position: relative;
+        min-height: 220px;
     }
 
     .settings {
@@ -845,3 +921,4 @@ a {
         font-size: 3rem;
     }
 }
+

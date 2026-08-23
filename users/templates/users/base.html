@@ -16,6 +16,12 @@
     {% block nav %}
         <header class="nap">
             <img src="{% static 'img/logo.png' %}" alt="IRIS">
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Cerrar sesión</button>
+            </form>
+            {% endif %}
         </header>
     {% endblock %}
 

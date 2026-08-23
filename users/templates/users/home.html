@@ -5,7 +5,10 @@
 {% block content %}
 <div class="home">
     <div class="left-div">
-        <img src="{% url 'qr_code' %}" alt="QR acceso remoto" class="qr-code">
+        <div class="qr-card">
+            <img src="{% url 'qr_code' %}" alt="QR acceso remoto" class="qr-code">
+            <p>Escanea para acceso remoto</p>
+        </div>
     </div>
 
     <div class="cameras">

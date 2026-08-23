@@ -156,5 +156,4 @@ Fase 5: ✅ Completada y probada. Acceso remoto vía QR + Tailscale Funnel funci
 Pendiente: al terminar el uso (~1 mes), desactivar el Funnel
 (tailscale funnel off / tailscale down) — sin costo ni compromiso de continuidad.
 
-CHANGELOG: .env — se agregó TUNNEL_DOMAIN con el dominio de Tailscale Funnel
-(laptop-fnn67m42.tail81ea30.ts.net); Fase 5 probada end-to-end.
+CHANGELOG: cam.html — onerror/onload solo disparan ante un fallo de red explícito (conexión rechazada, cierre abrupto); si generar_stream() abre la conexión pero nunca entrega un frame (p. ej. IP de cámara inválida), el <img> queda "cargando" indefinidamente sin disparar ninguno de los dos eventos, dejando el recuadro vacío — consistente con lo que se ve en la captura. Se agregó un watchdog por setTimeout (8s) que fuerza iniciarReintentoStream() si no hubo onload/onerror a tiempo, y se re-arma en cada recarga; no se tocó generar_stream() ni detection.py.

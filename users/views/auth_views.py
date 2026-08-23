@@ -31,13 +31,11 @@ def register_view(request):
         return redirect('home')
 
     if User.objects.exists():
-
         messages.error(
             request,
             'El registro está cerrado: IRIS ya tiene un Admin configurado.'
         )
-
-        return redirect('login')
+        return redirect('login_page')
 
     if request.method == 'POST':
 
@@ -51,8 +49,7 @@ def register_view(request):
                 request,
                 'Cuenta creada correctamente. Ahora inicia sesión.'
             )
-
-            return redirect('login')
+            return redirect('login_page')
 
         messages.error(
             request,
@@ -188,9 +185,9 @@ def login_view(request):
 # LOGOUT
 # ============================================================
 
-@login_required(login_url='login')
-def logout_view(request):
 
+@login_required(login_url='login_page')
+def logout_view(request):
     logout(request)
 
-    return redirect('login')
+    return redirect('login_page')

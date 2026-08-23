@@ -17,7 +17,7 @@ from .detection import (
 )
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def test_modelo(request):
 
     original_url = None

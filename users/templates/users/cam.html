@@ -53,7 +53,9 @@
 <script>
 (function () {
     var RETRY_DELAY_MS = 3000;
+    var LOAD_TIMEOUT_MS = 8000;
     var retryTimeout = null;
+    var loadTimeout = null;
 
     function mostrarError() {
         document.getElementById('cam-error').hidden = false;
@@ -65,12 +67,21 @@
         document.getElementById('cam-stream').style.display = '';
     }
 
+    function armarWatchdog() {
+        clearTimeout(loadTimeout);
+        loadTimeout = setTimeout(function () {
+            window.iniciarReintentoStream();
+        }, LOAD_TIMEOUT_MS);
+    }
+
     function recargarStream() {
         var img = document.getElementById('cam-stream');
         img.src = img.dataset.streamUrl + '?t=' + Date.now();
+        armarWatchdog();
     }
 
     window.iniciarReintentoStream = function () {
+        clearTimeout(loadTimeout);
         mostrarError();
         clearTimeout(retryTimeout);
         retryTimeout = setTimeout(recargarStream, RETRY_DELAY_MS);
@@ -78,6 +89,7 @@
 
     window.ocultarErrorStream = function () {
         clearTimeout(retryTimeout);
+        clearTimeout(loadTimeout);
         ocultarError();
     };
 
@@ -85,6 +97,8 @@
         clearTimeout(retryTimeout);
         recargarStream();
     };
+
+    armarWatchdog();
 })();
 </script>
 {% endblock %}

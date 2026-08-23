@@ -21,7 +21,7 @@ from .detection import generar_stream
 # HOME
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def home_view(request):
 
     camaras = Camera.objects.filter(
@@ -41,7 +41,7 @@ def home_view(request):
 # QR DE ACCESO REMOTO
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def qr_code_view(request):
 
     if settings.TUNNEL_DOMAIN:
@@ -64,7 +64,7 @@ def qr_code_view(request):
 # NUEVA CÁMARA
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def nueva_camara_view(request):
 
     if request.method == 'POST':
@@ -102,7 +102,7 @@ def nueva_camara_view(request):
 # ELIMINAR CÁMARA
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def eliminar_camara_view(
     request,
     camara_id
@@ -123,7 +123,7 @@ def eliminar_camara_view(
 # CÁMARA / GALERÍA EN VIVO
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def galeria_camara_view(
     request,
     camara_id
@@ -178,7 +178,7 @@ def galeria_camara_view(
 # VIDEO FEED
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def video_feed(
     request,
     camara_id
@@ -206,7 +206,7 @@ def video_feed(
 # ALERTA
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def obtener_alerta(
     request,
     camara_id
@@ -244,7 +244,7 @@ def obtener_alerta(
 # GALERÍA DE IMÁGENES DETECTADAS
 # ============================================================
 
-@login_required(login_url='login')
+@login_required(login_url='login_page')
 def ver_alertas(
     request,
     camara_id
