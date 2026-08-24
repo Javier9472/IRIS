@@ -65,6 +65,8 @@ IRIS/
 │
 ├── media/
 │   ├── alertas/                         # no versionado
+│   ├── alertas_faciales/                # foto de la detección de rostros 
+│   ├── personas_buscadas/               #se guardaron por error las fotos de entrenamiento adjuntadas en admin
 │   └── reportes/                        # no versionado — PDFs generados (Fase 7)
 │
 ├── ml_models/
@@ -99,6 +101,7 @@ IRIS/
     │   ├── nueva_camara.html
     │   ├── register.html
     │   ├── reportes.html               # Fase 7 — galería de reportes PDF
+    │   ├── reporte_incidente.html       
     │   └── test_model.html
     └── views/
         ├── __init__.py
@@ -139,7 +142,7 @@ Fase	Descripción	Estado
 4	Refactor UI/CSS mobile-first + autenticación de Admin único	✅ Completada
 5	Acceso remoto al dashboard vía celular por QR (el celular es solo visor del stream ya procesado, no captura video) usando Tailscale Funnel	✅ Completada
 6	Reconocimiento facial de personas buscadas (modelo PersonaBuscada) + correlación con detección de armas + borrado manual de AlertaFacial vía Django Admin	✅ Completada
-7	Reporte PDF automático por incidente (armas / rostros requisitoriados / eventos correlacionados) almacenado en el proyecto, con galería de descarga	🔲 Diseño cerrado — lista para implementación
+7	Reporte PDF automático por incidente (armas / rostros requisitoriados / eventos correlacionados) almacenado en el proyecto, con galería de descarga	✅ Completada
 
 ## 7. Decisiones ya tomadas (no volver a preguntar) 
 Sin sistema multiusuario: un solo Admin.
@@ -181,15 +184,20 @@ Fase 5: ✅ Completada y probada (celular como visor vía Tailscale Funnel). Pen
 
 Fase 6: ✅ Completada y cerrada. Reconocimiento facial completo, enganche confirmado en `detection.py` — verificado en producción local.
 
-**Fase 7 (MISIÓN ACTIVA): Reporte PDF automático por incidente + galería de descarga**
+Fase 7: ✅ Completada y probada. Reporte PDF automático por incidente + galería de descarga, funcionando en producción local (WeasyPrint vía MSYS2 en Windows).
 
-Diseño completo y confirmado (ver Sección 7): modelo `Incidente`, ventana de 30s de inactividad para cerrar el incidente y disparar el PDF, WeasyPrint como motor de generación, galería nueva vía `reportes_views.py` + `reportes.html`.
+**Resuelto en esta sesión (bugs post-implementación de Fase 7):**
+- Lag al abrir cámara: `generar_stream()` usaba backend MSMF por defecto en Windows para fuentes locales (tardaba varios segundos); se fuerza `cv2.CAP_DSHOW` para fuentes locales (índice int).
+- Lag general del stream: `detect_objects()` consultaba `Camera` en la BD en cada frame; ahora usa cache con TTL de 5s (`_get_camara_cached`).
+- PDF no se generaba: `cerrar_incidentes_vencidos()` marcaba el incidente como cerrado (`hora_fin`) antes de confirmar que el PDF se había generado; si `generar_pdf_incidente()` fallaba, quedaba cerrado para siempre sin PDF. Ahora `hora_fin` solo se persiste tras generar el PDF con éxito, con reintento en el próximo ciclo si falla.
+- Incidentes que nunca cerraban: si el stream se cortaba antes de los 30s de inactividad, nunca llegaba otro frame para disparar la revisión de cierre. Se agregó `cerrar_incidente_por_desconexion()`, llamada desde el `finally` de `generar_stream()` — cierra y genera el PDF de inmediato al cortarse el stream. Trade-off aceptado: una reconexión rápida (recarga de página) cierra el incidente en curso y arranca uno nuevo.
+- PDF arrastraba detecciones faciales de horas atrás: `gestionar_incidente()` buscaba TODAS las `AlertaFacial` sin incidente asignado, sin acotar por tiempo. Se acotó a `fecha_deteccion__gte=ahora - INCIDENTE_TIMEOUT_SECONDS`.
+- Diseño del PDF: rediseñado a estética formal (texto 100% negro, logo IRIS a la izquierda desde `static/img/logo.png`, ficha de incidente, ubicación fija vía `settings.INCIDENTE_UBICACION_FIJA` — pendiente reemplazar por geolocalización real, pie de página con numeración).
 
-**Todavía no se escribió código de esta fase.** Siguiente paso: implementación.
+**Problemas conocidos, no bloqueantes:**
+- Al iniciar el stream, a veces aparece brevemente un mensaje de "cámara no operativa" antes de estabilizarse. No grave — pendiente investigar la causa exacta.
+- La detección de armas en vivo a veces pierde fluidez (menos fps aparente). No diagnosticado todavía.
 
-Archivos que se van a necesitar para arrancar (pedir al usuario antes de escribir código, por la regla de la Sección 8):
-- `users/models.py` (para agregar `Incidente` sin romper `Camera`, `Alerta`, `PersonaBuscada`, `AlertaFacial`)
-- `users/views/detection.py` (para enganchar la revisión de cierre de incidentes — ya se tiene la versión actual de la sesión pasada, pero conviene reconfirmar si no ha cambiado)
-- `eye/settings.py` (confirmar `MEDIA_ROOT`, `INSTALLED_APPS`, y dónde agregar la config de WeasyPrint si aplica)
-- `requirements.txt` (para agregar `weasyprint`)
-- `users/urls.py` y `users/templates/users/base.html` (para saber cómo están armadas las rutas y el menú de navegación actuales, y agregar el link a la nueva galería de reportes de forma consistente)
+**Sin misión activa definida por ahora** — Fases 1-7 completadas. Identificación de patrones de robo (Sección 1, alcance futuro) sigue sin arquitectura preparada ni fecha; no arrancar sin que el usuario lo pida explícitamente.
+
+CHANGELOG: users/views/detection.py, users/views/reportes_views.py, users/templates/users/reporte_incidente.html, eye/settings.py — Fase 7 cerrada: fix de lag de cámara (CAP_DSHOW + cache de Camera), cierre de incidentes corregido (orden PDF/hora_fin, cierre por desconexión, ventana de facial_pendientes), rediseño formal del PDF con logo y ubicación fija

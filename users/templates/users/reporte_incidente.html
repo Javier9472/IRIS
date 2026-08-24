@@ -1,0 +1,101 @@
+{# users/templates/users/reporte_incidente.html — usado solo por WeasyPrint #}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+    @page {
+        size: A4;
+        margin: 2.2cm 1.8cm 2cm 1.8cm;
+        @bottom-center {
+            content: "IRIS — Sistema de Vigilancia con Inteligencia Artificial   |   Página " counter(page) " de " counter(pages);
+            font-size: 7.5pt;
+            color: #000000;
+        }
+    }
+    * { color: #000000; }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4; }
+
+    .encabezado { display: flex; align-items: center; border-bottom: 2pt solid #000000; padding-bottom: 10pt; margin-bottom: 14pt; }
+    .encabezado img { height: 48pt; margin-right: 14pt; }
+    .encabezado .titulo-sistema { font-size: 15pt; font-weight: bold; letter-spacing: 1pt; }
+    .encabezado .subtitulo-sistema { font-size: 8pt; }
+
+    h1 { font-size: 14pt; font-weight: bold; margin: 0 0 10pt 0; text-transform: uppercase; }
+
+    .ficha { width: 100%; border-collapse: collapse; margin-bottom: 4pt; }
+    .ficha td { font-size: 9.5pt; padding: 3pt 6pt 3pt 0; vertical-align: top; }
+    .ficha td.etiqueta { font-weight: bold; width: 90pt; }
+
+    .badge { display: inline-block; padding: 1.5pt 8pt; border: 1pt solid #000000; font-size: 8.5pt; font-weight: bold; text-transform: uppercase; }
+
+    .seccion { font-size: 11.5pt; font-weight: bold; text-transform: uppercase; border-bottom: 1pt solid #000000; padding-bottom: 3pt; margin-top: 22pt; margin-bottom: 8pt; }
+
+    table.evidencias { width: 100%; border-collapse: collapse; margin-bottom: 6pt; }
+    table.evidencias th, table.evidencias td { text-align: left; padding: 5pt 7pt; border: 1pt solid #999999; font-size: 9pt; }
+    table.evidencias th { background: #EAEAEA; font-weight: bold; }
+
+    .grid-fotos { width: 100%; }
+    .grid-fotos img { width: 130pt; border: 1pt solid #000000; margin: 4pt 8pt 10pt 0; }
+
+    .firma { margin-top: 40pt; font-size: 9pt; }
+    .firma .linea { border-top: 1pt solid #000000; width: 220pt; margin-top: 28pt; padding-top: 3pt; }
+</style>
+</head>
+<body>
+
+    <div class="encabezado">
+        {% if logo_uri %}<img src="{{ logo_uri }}">{% endif %}
+        <div>
+            <div class="titulo-sistema">IRIS</div>
+            <div class="subtitulo-sistema">Inteligencia para Reconocimiento, Identificación y Seguridad</div>
+        </div>
+    </div>
+
+    <h1>Reporte de incidente Nº {{ incidente.id }}</h1>
+
+    <table class="ficha">
+        <tr><td class="etiqueta">Clasificación</td><td><span class="badge">{{ incidente.get_tipo_display }}</span></td></tr>
+        <tr><td class="etiqueta">Cámara</td><td>{{ incidente.camara.nombre }}</td></tr>
+        <tr><td class="etiqueta">Ubicación</td><td>{{ ubicacion }}</td></tr>
+        <tr><td class="etiqueta">Inicio del incidente</td><td>{{ incidente.hora_inicio|date:"d/m/Y H:i:s" }}</td></tr>
+        <tr><td class="etiqueta">Fin del incidente</td><td>{{ incidente.hora_fin|date:"d/m/Y H:i:s" }}</td></tr>
+        <tr><td class="etiqueta">Reporte generado</td><td>{{ generado_en|date:"d/m/Y H:i:s" }}</td></tr>
+    </table>
+
+    {% if alertas %}
+    <div class="seccion">Detecciones de armas / fuego</div>
+    <table class="evidencias">
+        <tr><th>Tipo</th><th>Fecha y hora</th></tr>
+        {% for item in alertas %}
+        <tr><td>{{ item.obj.tipo_deteccion }}</td><td>{{ item.obj.fecha_deteccion|date:"d/m/Y H:i:s" }}</td></tr>
+        {% endfor %}
+    </table>
+    <div class="grid-fotos">
+        {% for item in alertas %}
+            {% if item.imagen_uri %}<img src="{{ item.imagen_uri }}">{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if alertas_faciales %}
+    <div class="seccion">Reconocimiento facial</div>
+    <table class="evidencias">
+        <tr><th>Persona identificada</th><th>Similitud</th><th>Fecha y hora</th></tr>
+        {% for item in alertas_faciales %}
+        <tr><td>{{ item.obj.persona.nombre }}</td><td>{{ item.obj.confianza_facial|floatformat:2 }}</td><td>{{ item.obj.fecha_deteccion|date:"d/m/Y H:i:s" }}</td></tr>
+        {% endfor %}
+    </table>
+    <div class="grid-fotos">
+        {% for item in alertas_faciales %}
+            {% if item.imagen_uri %}<img src="{{ item.imagen_uri }}">{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="firma">
+        <div class="linea">Firma / Responsable de verificación</div>
+    </div>
+
+</body>
+</html>

@@ -83,6 +83,167 @@ a {
     z-index: 100;
 }
 
+/* ============================================================
+   Agregar en la sección NAVBAR, justo después de .logout-btn:hover
+============================================================ */
+
+.nav-link {
+    height: 38px;
+    padding: 0 1rem;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--color-700);
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+    background: var(--color-100);
+}
+
+
+/* ============================================================
+   Sección nueva completa — insertar después de ALERTAS / GALERÍA
+   y antes de TEST MODEL.
+   Nota: .reportes-container actúa como wrapper Y como grid a la vez
+   (no hay clase intermedia tipo .galeria); h1 y el link "volver"
+   usan grid-column: 1 / -1 para no romperse en columnas.
+============================================================ */
+
+.reportes-container {
+    min-height: calc(100vh - 64px);
+    padding: 1.5rem 1.25rem 6rem;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    background: var(--color-950);
+}
+
+.reportes-container h1 {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+    color: var(--color-50);
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.reportes-container > a {
+    grid-column: 1 / -1;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    color: var(--color-300);
+    font-weight: 600;
+}
+
+.reporte-card {
+    padding: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    background: var(--color-900);
+    color: var(--color-50);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+.reporte-card h3 {
+    font-size: 1rem;
+    text-transform: capitalize;
+}
+
+.reporte-card p {
+    font-size: 0.85rem;
+    color: var(--color-300);
+}
+
+.badge {
+    align-self: flex-start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.badge-arma {
+    background: rgba(196, 7, 7, 0.15);
+    color: var(--danger);
+}
+
+.badge-rostro {
+    background: rgba(43, 127, 255, 0.15);
+    color: var(--color-400);
+}
+
+.badge-correlacionado {
+    background: linear-gradient(90deg, var(--danger), var(--color-600));
+    color: #fff;
+}
+
+.btn-descargar {
+    margin-top: 0.5rem;
+    padding: 0.65rem 1rem;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--color-600);
+    color: #fff;
+
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    transition: background 0.2s ease;
+}
+
+.btn-descargar:hover {
+    background: var(--color-700);
+}
+
+
+/* ============================================================
+   Agregar dentro de @media (min-width: 600px) existente,
+   junto a .logout-btn:
+============================================================ */
+
+    .reportes-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .nav-link {
+        height: 42px;
+        padding: 0 1.25rem;
+        font-size: 0.9rem;
+    }
+
+
+/* ============================================================
+   Agregar dentro de @media (min-width: 900px) existente,
+   junto a .galeria:
+============================================================ */
+
+    .reportes-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
 .nap img {
     width: 44px;
     height: auto;

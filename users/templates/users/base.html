@@ -17,6 +17,7 @@
         <header class="nap">
             <img src="{% static 'img/logo.png' %}" alt="IRIS">
             {% if user.is_authenticated %}
+            <a href="{% url 'reportes' %}" class="nav-link">Reportes</a>
             <form method="post" action="{% url 'logout' %}" class="logout-form">
                 {% csrf_token %}
                 <button type="submit" class="logout-btn">Cerrar sesión</button>

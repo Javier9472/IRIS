@@ -1,3 +1,4 @@
+# users/views/detection.py
 """
 Motor de visión de Iris.
 
@@ -15,11 +16,13 @@ import os
 import subprocess
 import tempfile
 import time
+import threading
 
 import cv2
 import torch
 from ultralytics import YOLO
 
+from . import reportes_views
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
@@ -33,49 +36,66 @@ logger = logging.getLogger(__name__)
 # MODELO YOLO
 # ============================================================
 
-# Ruta absoluta a partir de BASE_DIR: no depende de la máquina ni de
-# desde dónde se ejecute manage.py. Apunta al peso versionado en
-# ml_models/ (Sección 3 de AI_CONTEXT.md), no a un run local de
-# training_runs/ (gitignored, no reproducible en otro entorno).
 MODEL_PATH = os.path.join(
     settings.BASE_DIR, 'ml_models', 'weapons_v1', 'best.pt'
 )
 
 model = YOLO(MODEL_PATH)
 
-# Antes estaba fijo en "cpu". Si hay GPU disponible (CUDA), la usamos:
-# la inferencia por frame es varias veces más rápida, lo que importa
-# mucho en un stream en vivo.
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 logger.info(
     f"IRIS: modelo cargado desde '{MODEL_PATH}', usando dispositivo '{DEVICE}'"
 )
 
-last_capture_times = {}
+try:
+    facial_views._get_face_app()
+    logger.info("IRIS: pipeline facial (InsightFace) precargado")
+except Exception:
+    logger.exception(
+        "IRIS: no se pudo precargar el pipeline facial, se reintentará en el primer frame"
+    )
 
+last_capture_times = {}
+model_lock = threading.Lock()
+last_facial_frame_times = {}
+last_incidente_check_times = {}
+
+_capturas_activas = {}
+_capturas_lock = threading.Lock()
+
+_camera_cache = {}
+_camera_cache_lock = threading.Lock()
+CAMERA_CACHE_TTL = 5
+
+
+def _get_camara_cached(camara_id):
+    now = time.time()
+    with _camera_cache_lock:
+        entry = _camera_cache.get(camara_id)
+        if entry and (now - entry[1] < CAMERA_CACHE_TTL):
+            return entry[0]
+    camara = get_object_or_404(Camera, id=camara_id)
+    with _camera_cache_lock:
+        _camera_cache[camara_id] = (camara, now)
+    return camara
 
 # ============================================================
 # DETECCIÓN
 # ============================================================
 
-# users/views/detection.py — reemplaza la función detect_objects()
-
-# users/views/detection.py — reemplaza la función detect_objects()
 def detect_objects(
     frame,
     camara_id
 ):
 
-    camara = get_object_or_404(
-        Camera,
-        id=camara_id
-    )
+    camara = _get_camara_cached(camara_id)
 
-    results = model(
-        frame,
-        device=DEVICE
-    )
+    with model_lock:
+        results = model(
+            frame,
+            device=DEVICE
+        )
 
     result = results[0]
 
@@ -131,7 +151,6 @@ def detect_objects(
             >= capture_delay
         ):
 
-            # Compresión JPEG de la política de retención (Sección 9).
             success, buffer = cv2.imencode(
                 '.jpg',
                 frame,
@@ -170,20 +189,39 @@ def detect_objects(
                     camara_id
                 ] = current_time
 
-    # Fase 6: pipeline facial opcional, hermano del motor de armas.
-    # Un fallo acá (import, sin GPU, sin rostro) nunca debe interrumpir
-    # el stream de detección.
-    try:
-        facial_views.procesar_frame_facial(
-            frame,
-            camara_id,
-            detecciones_arma,
-            alertas_creadas
-        )
-    except Exception:
-        logger.exception(
-            f"Cámara {camara_id}: fallo en pipeline facial, se omite este frame"
-        )
+    current_time_facial = time.time()
+    last_facial = last_facial_frame_times.get(camara_id, 0)
+
+    if current_time_facial - last_facial >= settings.FACIAL_FRAME_INTERVAL_SECONDS:
+        last_facial_frame_times[camara_id] = current_time_facial
+        try:
+            with model_lock:
+                facial_views.procesar_frame_facial(
+                    frame,
+                    camara_id,
+                    detecciones_arma,
+                    alertas_creadas
+                )
+        except Exception:
+            logger.exception(
+                f"Cámara {camara_id}: fallo en pipeline facial, se omite este frame"
+            )
+
+    current_time_incidente = time.time()
+    last_incidente_check = last_incidente_check_times.get(camara_id, 0)
+
+    if alertas_creadas or (
+        current_time_incidente - last_incidente_check
+        >= settings.INCIDENTE_CHECK_INTERVAL_SECONDS
+    ):
+        last_incidente_check_times[camara_id] = current_time_incidente
+        try:
+            reportes_views.gestionar_incidente(camara_id, alertas_creadas)
+            reportes_views.cerrar_incidentes_vencidos(camara_id)
+        except Exception:
+            logger.exception(
+                f"Cámara {camara_id}: fallo en gestión de incidentes, se omite este frame"
+            )
 
     return result.plot()
 
@@ -191,70 +229,55 @@ def detect_objects(
 # STREAM DE CÁMARA
 # ============================================================
 
-def generar_stream(
-    camara_ip,
-    camara_id
-):
+def generar_stream(camara_ip, camara_id):
 
     if str(camara_ip).strip().isdigit():
-
         fuente = int(str(camara_ip).strip())
-
-    # Si ya es una URL
     elif (
-        str(camara_ip).startswith(
-            'rtsp://'
-        )
-        or str(camara_ip).startswith(
-            'http://'
-        )
-        or str(camara_ip).startswith(
-            'https://'
-        )
+        str(camara_ip).startswith('rtsp://')
+        or str(camara_ip).startswith('http://')
+        or str(camara_ip).startswith('https://')
     ):
-
         fuente = camara_ip
-
-    # Cámara IP tipo celular
     else:
+        fuente = 'http://' + str(camara_ip) + ':8080/video'
 
-        fuente = (
-            'http://'
-            + str(camara_ip)
-            + ':8080/video'
-        )
+    with _capturas_lock:
+        anterior = _capturas_activas.get(camara_id)
+        if anterior is not None:
+            logger.warning(
+                f"Cámara {camara_id}: había una captura previa sin liberar, se cierra antes de abrir la nueva"
+            )
+            anterior.release()
 
-    logger.info(f"Cámara {camara_id}: abriendo fuente '{fuente}'")
-
-    cap = cv2.VideoCapture(
-        fuente
-    )
+        logger.info(f"Cámara {camara_id}: abriendo fuente '{fuente}'")
+        # Backend explícito para fuentes locales: en Windows, MSMF (default
+        # de OpenCV) tarda varios segundos en abrir un índice de cámara —
+        # causa directa del lag reportado al abrir. DSHOW abre casi
+        # instantáneo. Fuentes IP/URL usan el backend default (DSHOW no
+        # aplica a streams de red).
+        if isinstance(fuente, int):
+            cap = cv2.VideoCapture(fuente, cv2.CAP_DSHOW)
+        else:
+            cap = cv2.VideoCapture(fuente)
+        _capturas_activas[camara_id] = cap
 
     if not cap.isOpened():
-
         logger.error(f"Cámara {camara_id}: no se pudo abrir la fuente '{fuente}'")
-
+        with _capturas_lock:
+            if _capturas_activas.get(camara_id) is cap:
+                del _capturas_activas[camara_id]
         return
 
     try:
-
         while True:
-
             success, frame = cap.read()
-
             if not success:
                 break
 
-            frame = detect_objects(
-                frame,
-                camara_id
-            )
+            frame = detect_objects(frame, camara_id)
 
-            success, buffer = cv2.imencode(
-                '.jpg',
-                frame
-            )
-
+            success, buffer = cv2.imencode('.jpg', frame)
             if not success:
                 continue
 
@@ -266,11 +289,17 @@ def generar_stream(
                 + frame_bytes
                 + b'\r\n'
             )
-
     finally:
-
         cap.release()
-
+        with _capturas_lock:
+            if _capturas_activas.get(camara_id) is cap:
+                del _capturas_activas[camara_id]
+        try:
+            reportes_views.cerrar_incidente_por_desconexion(camara_id)
+        except Exception:
+            logger.exception(
+                f"Cámara {camara_id}: fallo cerrando incidentes al desconectar el stream"
+            )
 
 # ============================================================
 # PROCESAR IMAGEN TEMPORAL

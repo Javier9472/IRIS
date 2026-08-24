@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -238,3 +238,15 @@ FACIAL_SIMILITUD_MINIMA = 0.5  # umbral de similitud coseno para match facial
 
 # eye/settings.py — agregar junto a FACIAL_SIMILITUD_MINIMA
 FACIAL_COOLDOWN_SECONDS = 5  # segundos mínimos entre AlertaFacial para la misma persona+cámara
+
+# eye/settings.py — agregar junto a FACIAL_COOLDOWN_SECONDS
+FACIAL_FRAME_INTERVAL_SECONDS = 1  # cada cuántos segundos se corre la detección facial completa por cámara (no en cada frame)
+
+# eye/settings.py — agregar junto a FACIAL_COOLDOWN_SECONDS
+INCIDENTE_TIMEOUT_SECONDS = 30  # segundos de inactividad para cerrar un Incidente y generar su PDF
+
+# eye/settings.py — agregar junto a INCIDENTE_TIMEOUT_SECONDS
+INCIDENTE_CHECK_INTERVAL_SECONDS = 2  # frecuencia máxima de revisión de incidentes cuando no hay alertas nuevas
+
+# eye/settings.py — agregar junto a INCIDENTE_CHECK_INTERVAL_SECONDS
+INCIDENTE_UBICACION_FIJA = "-11.997479208663645, -77.11744876473259"  # texto fijo por ahora — a futuro, geolocalización real por cámara

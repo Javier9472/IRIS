@@ -1,5 +1,6 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
+from .views.reportes_views import reportes_view
 from . import views
 
 
@@ -57,5 +58,11 @@ urlpatterns = [
         'test/',
         views.test_modelo,
         name='test_modelo'
+    ),
+    
+    path(
+        'reportes/'
+        , reportes_view,
+        name='reportes'
     ),
 ]

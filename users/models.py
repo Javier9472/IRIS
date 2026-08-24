@@ -73,3 +73,42 @@ def eliminar_imagen_alerta_facial(sender, instance, **kwargs):
     # Cubre ambos: post_delete se dispara por instancia en los dos casos.
     if instance.imagen:
         instance.imagen.delete(save=False)
+        
+# users/models.py — agregar al final del archivo
+
+class Incidente(models.Model):
+    TIPO_CHOICES = [
+        ('arma', 'Arma'),
+        ('rostro', 'Rostro'),
+        ('correlacionado', 'Correlacionado'),
+    ]
+
+    camara = models.ForeignKey(Camera, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='arma')
+    hora_inicio = models.DateTimeField(auto_now_add=True)
+    hora_fin = models.DateTimeField(null=True, blank=True)
+    ultima_deteccion = models.DateTimeField()
+    pdf = models.FileField(upload_to='reportes/', null=True, blank=True)
+
+    # M2M en vez de FK en Alerta/AlertaFacial: no las modifica (Sección 7).
+    alertas = models.ManyToManyField(Alerta, blank=True, related_name='incidentes')
+    alertas_faciales = models.ManyToManyField(AlertaFacial, blank=True, related_name='incidentes')
+
+    def recalcular_tipo(self):
+        tiene_arma = self.alertas.exists()
+        tiene_rostro = self.alertas_faciales.exists()
+        if tiene_arma and tiene_rostro:
+            self.tipo = 'correlacionado'
+        elif tiene_rostro:
+            self.tipo = 'rostro'
+        else:
+            self.tipo = 'arma'
+
+    def __str__(self):
+        return f"Incidente #{self.pk} - {self.camara.nombre} - {self.get_tipo_display()}"
+
+
+@receiver(post_delete, sender=Incidente)
+def eliminar_pdf_incidente(sender, instance, **kwargs):
+    if instance.pdf:
+        instance.pdf.delete(save=False)

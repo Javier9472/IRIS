@@ -10,6 +10,8 @@ qrcode==8.2
 pillow==12.3.0
 insightface==0.7.3
 onnxruntime-gpu==1.19.2
+weasyprint>=62.0
+
 
 # --- IMPORTANTE sobre la GPU en Windows ---
 # `ultralytics` instala una versión de PyTorch por defecto que en Windows
@@ -26,3 +28,6 @@ onnxruntime-gpu==1.19.2
 # --- Requisito de sistema, no de pip ---
 # `ffmpeg` debe estar instalado y disponible en el PATH de Windows
 # (se usa en reencode_to_h264 para convertir video de prueba a H.264).
+
+# --- Requisito de sistema en Windows ---
+# WeasyPrint necesita el runtime de GTK3 instalado además de `pip install weasyprint`.

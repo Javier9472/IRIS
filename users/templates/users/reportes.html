@@ -1,0 +1,29 @@
+{# users/templates/users/reportes.html — archivo nuevo #}
+{% extends "users/base.html" %}
+
+{% block title %}Reportes — IRIS{% endblock %}
+
+{% block content %}
+<main class="reportes-container">
+    <h1>Reportes</h1>
+
+    {% if incidentes %}
+    <ul class="reportes-lista">
+        {% for incidente in incidentes %}
+        <li class="reporte-card">
+            <span class="badge badge-{{ incidente.tipo }}">{{ incidente.get_tipo_display }}</span>
+            <div class="reporte-info">
+                <span class="reporte-camara">{{ incidente.camara.nombre }}</span>
+                <span class="reporte-fecha">{{ incidente.hora_inicio|date:"d/m/Y H:i" }}</span>
+            </div>
+            {% if incidente.pdf %}
+            <a href="{{ incidente.pdf.url }}" class="btn-descargar" download>Descargar PDF</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="reportes-vacio">Todavía no hay reportes generados.</p>
+    {% endif %}
+</main>
+{% endblock %}

@@ -1,7 +1,7 @@
 # users/admin.py
 from django.contrib import admin, messages
 
-from .models import PersonaBuscada, AlertaFacial
+from .models import PersonaBuscada, AlertaFacial, Incidente
 from .views import facial_views
 
 
@@ -34,6 +34,21 @@ class AlertaFacialAdmin(admin.ModelAdmin):
     list_display = ('persona', 'camara', 'confianza_facial', 'confianza_arma', 'fecha_deteccion')
     list_filter = ('persona', 'camara')
     readonly_fields = [f.name for f in AlertaFacial._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(Incidente)
+class IncidenteAdmin(admin.ModelAdmin):
+    list_display = ('id', 'camara', 'tipo', 'hora_inicio', 'hora_fin', 'tiene_pdf')
+    list_filter = ('tipo', 'camara')
+    ordering = ('-hora_inicio',)
+    readonly_fields = [f.name for f in Incidente._meta.fields]
+
+    @admin.display(boolean=True, description='PDF generado')
+    def tiene_pdf(self, obj):
+        return bool(obj.pdf)
 
     def has_add_permission(self, request):
         return False
