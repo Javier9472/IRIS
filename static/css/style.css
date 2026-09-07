@@ -1,9 +1,12 @@
 /* =========================================================
-   RESET / BASE
+   TOKENS
+   Misma paleta azul de siempre (--color-50..950 sin tocar).
+   Se agregan tokens derivados para unificar superficies,
+   bordes y sombras en un solo sistema consistente.
 ========================================================= */
 
 :root {
-    --color-50: #EFF6FF;
+    --color-50:  #EFF6FF;
     --color-100: #DBEAFE;
     --color-200: #BEDBFF;
     --color-300: #8EC5FF;
@@ -15,13 +18,29 @@
     --color-900: #1C398E;
     --color-950: #162456;
 
-    --danger: #c40707;
-    --danger-dark: #a80505;
+    --danger: #C40707;
+    --danger-dark: #A80505;
+    --danger-light: #FF6B6B;
 
-    --border: rgba(43, 127, 255, 0.22);
-    --shadow: 0 16px 40px rgba(22, 36, 86, 0.35);
-    --radius: 16px;
+    --bg: #0E1732;
+    --surface: #15224A;
+    --surface-2: #1B2A57;
+    --input-bg: #0B1226;
+
+    --border: rgba(120, 162, 255, 0.14);
+    --border-strong: rgba(120, 162, 255, 0.28);
+
+    --shadow-sm: 0 1px 2px rgba(2, 5, 14, 0.5);
+    --shadow-md: 0 16px 32px rgba(2, 6, 20, 0.5);
+
+    --radius: 14px;
+    --radius-sm: 10px;
 }
+
+
+/* =========================================================
+   RESET / BASE
+========================================================= */
 
 * {
     margin: 0;
@@ -36,7 +55,7 @@ html {
 body {
     min-height: 100vh;
     font-family: "Inter", sans-serif;
-    background: var(--color-950);
+    background: var(--bg);
     color: var(--color-50);
 }
 
@@ -62,6 +81,27 @@ a {
     text-decoration: none;
 }
 
+:focus-visible {
+    outline: 2px solid var(--color-500);
+    outline-offset: 2px;
+}
+
+.icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
 
 /* =========================================================
    NAVBAR
@@ -77,15 +117,18 @@ a {
     justify-content: space-between;
 
     background: var(--color-50);
+    border-bottom: 1px solid rgba(22, 36, 86, 0.08);
 
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-/* ============================================================
-   Agregar en la sección NAVBAR, justo después de .logout-btn:hover
-============================================================ */
+.nap img {
+    width: 44px;
+    height: auto;
+    object-fit: contain;
+}
 
 .nav-link {
     height: 38px;
@@ -94,6 +137,7 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.4rem;
 
     color: var(--color-700);
 
@@ -108,148 +152,6 @@ a {
     background: var(--color-100);
 }
 
-
-/* ============================================================
-   Sección nueva completa — insertar después de ALERTAS / GALERÍA
-   y antes de TEST MODEL.
-   Nota: .reportes-container actúa como wrapper Y como grid a la vez
-   (no hay clase intermedia tipo .galeria); h1 y el link "volver"
-   usan grid-column: 1 / -1 para no romperse en columnas.
-============================================================ */
-
-.reportes-container {
-    min-height: calc(100vh - 64px);
-    padding: 1.5rem 1.25rem 6rem;
-
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-
-    background: var(--color-950);
-}
-
-.reportes-container h1 {
-    grid-column: 1 / -1;
-    margin-bottom: 0.5rem;
-    color: var(--color-50);
-    font-size: clamp(1.5rem, 6vw, 2.25rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-}
-
-.reportes-container > a {
-    grid-column: 1 / -1;
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    color: var(--color-300);
-    font-weight: 600;
-}
-
-.reporte-card {
-    padding: 1.25rem;
-
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    background: var(--color-900);
-    color: var(--color-50);
-
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow);
-}
-
-.reporte-card h3 {
-    font-size: 1rem;
-    text-transform: capitalize;
-}
-
-.reporte-card p {
-    font-size: 0.85rem;
-    color: var(--color-300);
-}
-
-.badge {
-    align-self: flex-start;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
-
-.badge-arma {
-    background: rgba(196, 7, 7, 0.15);
-    color: var(--danger);
-}
-
-.badge-rostro {
-    background: rgba(43, 127, 255, 0.15);
-    color: var(--color-400);
-}
-
-.badge-correlacionado {
-    background: linear-gradient(90deg, var(--danger), var(--color-600));
-    color: #fff;
-}
-
-.btn-descargar {
-    margin-top: 0.5rem;
-    padding: 0.65rem 1rem;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    background: var(--color-600);
-    color: #fff;
-
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 700;
-
-    transition: background 0.2s ease;
-}
-
-.btn-descargar:hover {
-    background: var(--color-700);
-}
-
-
-/* ============================================================
-   Agregar dentro de @media (min-width: 600px) existente,
-   junto a .logout-btn:
-============================================================ */
-
-    .reportes-container {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .nav-link {
-        height: 42px;
-        padding: 0 1.25rem;
-        font-size: 0.9rem;
-    }
-
-
-/* ============================================================
-   Agregar dentro de @media (min-width: 900px) existente,
-   junto a .galeria:
-============================================================ */
-
-    .reportes-container {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-.nap img {
-    width: 44px;
-    height: auto;
-    object-fit: contain;
-}
-
 .logout-form {
     display: inline-flex;
 }
@@ -261,6 +163,7 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.4rem;
 
     background: transparent;
     color: var(--color-700);
@@ -280,6 +183,119 @@ a {
     border-color: var(--color-600);
 }
 
+
+/* =========================================================
+   REPORTES / GALERÍA DE PDF
+========================================================= */
+
+.reportes-container {
+    min-height: calc(100vh - 64px);
+    padding: 1.5rem 1.25rem 6rem;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    background: var(--bg);
+}
+
+.reportes-container h1 {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+    color: var(--color-50);
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.reportes-container > a {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-300);
+    font-weight: 600;
+}
+
+.reporte-card {
+    padding: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    background: var(--surface);
+    color: var(--color-50);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.reporte-card h3 {
+    font-size: 1rem;
+    text-transform: capitalize;
+}
+
+.reporte-card p {
+    font-size: 0.85rem;
+    color: var(--color-300);
+}
+
+.reportes-vacio {
+    grid-column: 1 / -1;
+    color: var(--color-300);
+}
+
+.badge {
+    align-self: flex-start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.badge-arma {
+    background: rgba(196, 7, 7, 0.16);
+    color: var(--danger-light);
+}
+
+.badge-rostro {
+    background: rgba(43, 127, 255, 0.15);
+    color: var(--color-400);
+}
+
+.badge-correlacionado {
+    background: linear-gradient(90deg, var(--danger), var(--color-600));
+    color: #fff;
+}
+
+.btn-descargar {
+    margin-top: 0.5rem;
+    padding: 0.65rem 1rem;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+
+    background: var(--color-600);
+    color: #fff;
+
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    transition: background 0.2s ease;
+}
+
+.btn-descargar:hover {
+    background: var(--color-700);
+}
+
+
 /* =========================================================
    AUTENTICACIÓN (login / register)
 ========================================================= */
@@ -295,7 +311,7 @@ a {
     padding: 2rem 1.25rem;
 
     background:
-        radial-gradient(circle at top, var(--color-900), var(--color-950) 65%);
+        radial-gradient(circle at top, var(--surface-2), var(--bg) 65%);
 }
 
 .auth-card {
@@ -303,11 +319,12 @@ a {
 
     padding: 2rem 1.5rem;
 
-    background: var(--color-50);
-    color: var(--color-950);
+    background: var(--surface);
+    color: var(--color-50);
 
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
 }
 
 .auth-card img {
@@ -324,7 +341,7 @@ a {
 }
 
 .auth-subtitle {
-    color: var(--color-800);
+    color: var(--color-300);
     font-size: 0.95rem;
     text-align: center;
     margin-bottom: 1.5rem;
@@ -345,11 +362,11 @@ a {
     height: 52px;
     padding: 0 1rem;
 
-    border: 2px solid var(--color-200);
-    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
 
-    background: #fff;
-    color: var(--color-950);
+    background: var(--input-bg);
+    color: var(--color-50);
 
     font-size: 1rem;
     outline: none;
@@ -358,8 +375,8 @@ a {
 }
 
 .auth-card input::placeholder {
-    color: var(--color-800);
-    opacity: 0.6;
+    color: var(--color-300);
+    opacity: 0.55;
 }
 
 .auth-card input:focus {
@@ -378,17 +395,16 @@ a {
     background: var(--color-600);
     color: #fff;
 
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
 
     font-size: 1rem;
     font-weight: 700;
 
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease;
 }
 
 .btn-primary:hover {
     background: var(--color-700);
-    transform: translateY(-2px);
 }
 
 .errorlist {
@@ -396,11 +412,11 @@ a {
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
 
-    background: rgba(196, 7, 7, 0.08);
-    border: 1px solid rgba(196, 7, 7, 0.3);
-    border-radius: 10px;
+    background: rgba(196, 7, 7, 0.14);
+    border: 1px solid rgba(196, 7, 7, 0.4);
+    border-radius: var(--radius-sm);
 
-    color: var(--danger);
+    color: var(--danger-light);
     font-size: 0.85rem;
 }
 
@@ -414,11 +430,11 @@ a {
     margin-top: 1.25rem;
     text-align: center;
     font-size: 0.9rem;
-    color: var(--color-800);
+    color: var(--color-300);
 }
 
 .auth-switch a {
-    color: var(--color-600);
+    color: var(--color-400);
     font-weight: 700;
     text-decoration: underline;
 }
@@ -430,7 +446,7 @@ a {
 
 .home {
     min-height: calc(100vh - 64px);
-    background: var(--color-950);
+    background: var(--bg);
 }
 
 .left-div {
@@ -458,13 +474,13 @@ a {
 .camara-card {
     padding: 1.25rem;
 
-    background: var(--color-50);
-    color: var(--color-950);
+    background: var(--surface);
+    color: var(--color-50);
 
     border: 1px solid var(--border);
     border-radius: var(--radius);
 
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-sm);
 }
 
 .camara-card h3 {
@@ -474,21 +490,23 @@ a {
 
 .camara-card p {
     margin: 0.25rem 0;
-    color: var(--color-800);
+    color: var(--color-300);
     font-size: 0.9rem;
 }
 
 .camara-card a {
     display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     margin-top: 0.75rem;
     margin-right: 1rem;
-    color: var(--color-600);
+    color: var(--color-400);
     font-weight: 700;
     font-size: 0.9rem;
 }
 
 .camara-card a.link-danger {
-    color: var(--danger);
+    color: var(--danger-light);
 }
 
 
@@ -511,9 +529,7 @@ a {
     background: var(--color-600);
     color: #fff;
 
-    font-size: 1.6rem;
-
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
 
     transition: transform 0.2s ease, background 0.2s ease;
 
@@ -521,15 +537,16 @@ a {
 }
 
 .cam-add:hover {
-    transform: scale(1.06);
+    transform: scale(1.04);
     background: var(--color-700);
 }
 
 #back {
     right: 1.25rem;
     bottom: 5.25rem;
-    background: var(--color-50);
-    color: var(--color-950);
+    background: var(--surface);
+    color: var(--color-50);
+    border: 1px solid var(--border-strong);
 }
 
 
@@ -546,6 +563,7 @@ a {
     justify-content: center;
 
     padding: 1.5rem 1.25rem;
+    background: var(--bg);
 }
 
 .form-container {
@@ -553,11 +571,12 @@ a {
 
     padding: 1.75rem 1.5rem;
 
-    background: var(--color-50);
-    color: var(--color-950);
+    background: var(--surface);
+    color: var(--color-50);
 
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
 }
 
 .form-container h2 {
@@ -577,6 +596,7 @@ a {
     margin-bottom: 0.4rem;
     font-weight: 600;
     font-size: 0.9rem;
+    color: var(--color-300);
 }
 
 .form-container input,
@@ -585,11 +605,11 @@ a {
     width: 100%;
     padding: 0.85rem 1rem;
 
-    background: #fff;
-    color: var(--color-950);
+    background: var(--input-bg);
+    color: var(--color-50);
 
-    border: 2px solid var(--color-200);
-    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     outline: none;
 
     transition: border-color 0.2s ease;
@@ -609,8 +629,10 @@ a {
     background: var(--color-600);
     color: #fff;
 
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-weight: 700;
+
+    transition: background 0.2s ease;
 }
 
 .form-container button:hover {
@@ -621,18 +643,14 @@ a {
     display: block;
     margin-top: 1rem;
     text-align: center;
-    color: var(--color-600);
+    color: var(--color-400);
     font-weight: 600;
 }
 
 
 /* =========================================================
-   QR 
+   QR
 ========================================================= */
-
-.left-div {
-    display: none;
-}
 
 .qr-card {
     display: flex;
@@ -642,23 +660,29 @@ a {
 
     padding: 1.75rem;
 
-    background: var(--color-50);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
 }
 
 .qr-card .qr-code {
     width: 180px;
     height: 180px;
     display: block;
+
+    background: #fff;
+    padding: 10px;
+    border-radius: var(--radius-sm);
 }
 
 .qr-card p {
-    color: var(--color-800);
+    color: var(--color-300);
     font-size: 0.85rem;
     font-weight: 600;
     text-align: center;
 }
+
 
 /* =========================================================
    CAM (stream + settings)
@@ -666,7 +690,7 @@ a {
 
 .cam {
     min-height: calc(100vh - 64px);
-    background: var(--color-950);
+    background: var(--bg);
 }
 
 .video {
@@ -687,7 +711,7 @@ a {
     width: 100%;
     border: 2px solid var(--color-600);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
 }
 
 .cam-error {
@@ -700,10 +724,10 @@ a {
     justify-content: center;
     gap: 0.85rem;
 
-    background: var(--color-950);
+    background: var(--surface);
     border: 2px solid var(--danger);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
 
     color: var(--color-50);
     text-align: center;
@@ -716,16 +740,20 @@ a {
 
 .cam-error p {
     font-weight: 700;
-    color: var(--danger);
+    color: var(--danger-light);
 }
 
 .cam-error button {
     padding: 0.65rem 1.5rem;
 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+
     background: var(--color-600);
     color: #fff;
 
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-weight: 700;
 
     transition: background 0.2s ease;
@@ -751,7 +779,7 @@ a {
     margin-bottom: 0.4rem;
     font-weight: 600;
     font-size: 0.9rem;
-    color: var(--color-200);
+    color: var(--color-300);
 }
 
 .settings input {
@@ -759,33 +787,18 @@ a {
     height: 48px;
     padding: 0 0.85rem;
 
-    background: #fff;
-    color: var(--color-950);
+    background: var(--input-bg);
+    color: var(--color-50);
 
-    border: 2px solid transparent;
-    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     outline: none;
+
+    transition: border-color 0.2s ease;
 }
 
 .settings input:focus {
     border-color: var(--color-500);
-}
-
-.settings textarea {
-    width: 100%;
-    min-height: 120px;
-    margin-top: 1rem;
-    padding: 0.85rem;
-
-    background: var(--color-900);
-    color: var(--color-50);
-
-    border: 1px solid var(--border);
-    border-radius: 12px;
-
-    font-size: 0.85rem;
-    line-height: 1.5;
-    resize: vertical;
 }
 
 .settings button {
@@ -796,12 +809,39 @@ a {
     background: var(--color-600);
     color: #fff;
 
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-weight: 700;
+
+    transition: background 0.2s ease;
 }
 
 .settings button:hover {
     background: var(--color-700);
+}
+
+.log-label {
+    margin-top: 1.25rem;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--color-300);
+}
+
+.settings textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 0.85rem;
+
+    background: var(--input-bg);
+    color: var(--color-300);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    resize: vertical;
 }
 
 
@@ -813,7 +853,7 @@ a {
     min-height: calc(100vh - 64px);
     padding: 1.5rem 1.25rem 6rem;
 
-    background: var(--color-950);
+    background: var(--bg);
 }
 
 .alertas-div h1 {
@@ -825,7 +865,9 @@ a {
 }
 
 .alertas-div > a {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     margin-bottom: 1.5rem;
     color: var(--color-300);
     font-weight: 600;
@@ -840,13 +882,13 @@ a {
 .alerta {
     overflow: hidden;
 
-    background: var(--color-900);
+    background: var(--surface);
     color: var(--color-50);
 
     border: 1px solid var(--border);
     border-radius: var(--radius);
 
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-sm);
 }
 
 .alerta img {
@@ -880,7 +922,7 @@ a {
     flex-direction: column;
     align-items: center;
 
-    background: var(--color-950);
+    background: var(--bg);
     color: var(--color-50);
 }
 
@@ -905,9 +947,9 @@ a {
     width: 100%;
     padding: 0.85rem;
 
-    background: var(--color-900);
-    border: 1px dashed var(--border);
-    border-radius: 12px;
+    background: var(--surface);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
 
     color: var(--color-50);
     font-size: 0.9rem;
@@ -919,8 +961,10 @@ a {
     background: var(--color-600);
     color: #fff;
 
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-weight: 700;
+
+    transition: background 0.2s ease;
 }
 
 .test-div button:hover {
@@ -929,7 +973,7 @@ a {
 
 .test-div > p {
     margin-bottom: 1.5rem;
-    color: var(--danger);
+    color: var(--danger-light);
 }
 
 .test-results {
@@ -945,14 +989,12 @@ a {
     margin-bottom: 0.5rem;
     color: var(--color-300);
     font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
 }
 
 .test-results img,
 .test-results video {
     width: 100%;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
 }
 
@@ -971,16 +1013,25 @@ a {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .reportes-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .test-results {
         flex-direction: row;
     }
 
-    .logout-btn {
-    height: 42px;
-    padding: 0 1.25rem;
-    font-size: 0.9rem;
-}
+    .nav-link {
+        height: 42px;
+        padding: 0 1.25rem;
+        font-size: 0.9rem;
+    }
 
+    .logout-btn {
+        height: 42px;
+        padding: 0 1.25rem;
+        font-size: 0.9rem;
+    }
 }
 
 @media (min-width: 900px) {
@@ -1004,7 +1055,7 @@ a {
         align-items: center;
         justify-content: center;
         background-image:
-            linear-gradient(to bottom, var(--color-600), var(--color-950)),
+            linear-gradient(to bottom, var(--color-900), var(--bg) 80%),
             url("../img/CCTV Security.jpg");
         background-size: cover;
         background-position: center;
@@ -1032,7 +1083,7 @@ a {
         max-width: 900px;
         min-height: 420px;
     }
-    
+
     .cam-cont img {
         max-height: 75vh;
         object-fit: contain;
@@ -1058,12 +1109,20 @@ a {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .reportes-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .cam-add {
         width: 58px;
         height: 58px;
         right: 2rem;
         bottom: 2rem;
-        font-size: 2rem;
+    }
+
+    .cam-add .icon {
+        width: 26px;
+        height: 26px;
     }
 
     #back {
@@ -1083,3 +1142,13 @@ a {
     }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

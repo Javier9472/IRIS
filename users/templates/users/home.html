@@ -20,10 +20,18 @@
                     <h3>{{ camara.nombre }}</h3>
                     <p><strong>IP:</strong> {{ camara.ip }}</p>
                     <p><strong>Creada:</strong> {{ camara.fecha_creacion|date:"d/m/Y H:i" }}</p>
-                    <a href="{% url 'galeria_camara' camara.id %}">📷 Ver cámara</a>
-                    <a href="{% url 'ver_alertas' camara.id %}">🖼️ Ver galería</a>
+                    <a href="{% url 'galeria_camara' camara.id %}">
+                        <svg class="icon"><use href="#icon-camera"></use></svg>
+                        Ver cámara
+                    </a>
+                    <a href="{% url 'ver_alertas' camara.id %}">
+                        <svg class="icon"><use href="#icon-image"></use></svg>
+                        Ver galería
+                    </a>
                     <a href="{% url 'eliminar_camara' camara.id %}" class="link-danger"
-                        onclick="return confirm('¿Eliminar esta cámara?');">🗑️ Eliminar
+                        onclick="return confirm('¿Eliminar esta cámara?');">
+                        <svg class="icon"><use href="#icon-trash"></use></svg>
+                        Eliminar
                     </a>
                 </div>
                 {% endfor %}
@@ -34,6 +42,10 @@
     </div>
 </div>
 
-<a href="{% url 'nueva_camara' %}" class="cam-add">➕</a>
-<a href="{% url 'test_modelo' %}" class="cam-add" id="back">👩‍🔬</a>
+<a href="{% url 'nueva_camara' %}" class="cam-add" aria-label="Agregar cámara">
+    <svg class="icon icon-lg"><use href="#icon-plus"></use></svg>
+</a>
+<a href="{% url 'test_modelo' %}" class="cam-add" id="back" aria-label="Probar modelo">
+    <svg class="icon icon-lg"><use href="#icon-flask"></use></svg>
+</a>
 {% endblock %}

@@ -18,7 +18,10 @@
                 >
                 <div class="cam-error" id="cam-error" hidden>
                     <p>Cámara no disponible</p>
-                    <button type="button" onclick="reintentarStreamManual()">Reintentar</button>
+                    <button type="button" onclick="reintentarStreamManual()">
+                        <svg class="icon"><use href="#icon-refresh"></use></svg>
+                        Reintentar
+                    </button>
                 </div>
             </div>
         </div>
@@ -42,13 +45,18 @@
             <button type="submit">Guardar</button>
         </form>
 
-        <textarea readonly>{% for alerta in alertas %}{{ alerta.fecha_deteccion }} - {{ alerta.tipo_deteccion }}
+        <p class="log-label">Registro de eventos</p>
+        <textarea readonly>{% for alerta in alertas %}{{ alerta.fecha_deteccion }} — {{ alerta.tipo_deteccion }}
 {% endfor %}</textarea>
     </div>
 </div>
 
-<a href="{% url 'home' %}" class="cam-add" id="back">←</a>
-<a href="{% url 'ver_alertas' camara.id %}" class="cam-add">🖼️</a>
+<a href="{% url 'home' %}" class="cam-add" id="back" aria-label="Volver">
+    <svg class="icon icon-lg"><use href="#icon-arrow-left"></use></svg>
+</a>
+<a href="{% url 'ver_alertas' camara.id %}" class="cam-add" aria-label="Ver galería">
+    <svg class="icon icon-lg"><use href="#icon-image"></use></svg>
+</a>
 
 <script>
 (function () {

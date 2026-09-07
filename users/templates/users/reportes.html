@@ -1,4 +1,4 @@
-{# users/templates/users/reportes.html — archivo nuevo #}
+{# users/templates/users/reportes.html #}
 {% extends "users/base.html" %}
 
 {% block title %}Reportes — IRIS{% endblock %}
@@ -17,7 +17,10 @@
                 <span class="reporte-fecha">{{ incidente.hora_inicio|date:"d/m/Y H:i" }}</span>
             </div>
             {% if incidente.pdf %}
-            <a href="{{ incidente.pdf.url }}" class="btn-descargar" download>Descargar PDF</a>
+            <a href="{{ incidente.pdf.url }}" class="btn-descargar" download>
+                <svg class="icon"><use href="#icon-download"></use></svg>
+                Descargar PDF
+            </a>
             {% endif %}
         </li>
         {% endfor %}

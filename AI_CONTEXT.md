@@ -134,6 +134,8 @@ Mobile-first estricto. CSS puro, sin librerías externas.
 ```
 Texto sobre fondo claro → `--color-950`. Texto sobre fondo oscuro → `#FFFFFF` o `--color-50`.
 
+Dark theme en toda la app (sesión 06/09/26): tokens derivados de la misma paleta — `--bg`, `--surface`, `--surface-2`, `--input-bg`, `--border`/`--border-strong`, `--shadow-sm`/`--shadow-md`, `--radius`/`--radius-sm` — definidos en `style.css`. Todas las tarjetas (antes mezcladas entre claras y oscuras) usan una sola superficie (`--surface`). Iconos: sprite SVG de símbolos en `base.html` (`<symbol id="icon-...">`), consumido con `<use>` en el resto de templates — ya no hay emojis en la UI.
+
 ## 6. Roadmap y estado
 Fase	Descripción	Estado
 1	Reorganización de carpetas/estructura (views modulares, logging, rutas de pesos)	✅ Completada
@@ -178,7 +180,7 @@ Python 3.11, Django 5.2.
 - Pide los archivos que necesitas.
 
 ## 9. Estado actual / Misión activa
-Última actualización: 23/08/26
+Última actualización: 06/09/26
 
 Fase 5: ✅ Completada y probada (celular como visor vía Tailscale Funnel). Pendiente aparte: desactivar el Funnel (`tailscale funnel off` / `tailscale down`) al terminar el uso (~1 mes desde el 22/08/26).
 
@@ -186,7 +188,7 @@ Fase 6: ✅ Completada y cerrada. Reconocimiento facial completo, enganche confi
 
 Fase 7: ✅ Completada y probada. Reporte PDF automático por incidente + galería de descarga, funcionando en producción local (WeasyPrint vía MSYS2 en Windows).
 
-**Resuelto en esta sesión (bugs post-implementación de Fase 7):**
+**Resuelto en sesión anterior (bugs post-implementación de Fase 7):**
 - Lag al abrir cámara: `generar_stream()` usaba backend MSMF por defecto en Windows para fuentes locales (tardaba varios segundos); se fuerza `cv2.CAP_DSHOW` para fuentes locales (índice int).
 - Lag general del stream: `detect_objects()` consultaba `Camera` en la BD en cada frame; ahora usa cache con TTL de 5s (`_get_camara_cached`).
 - PDF no se generaba: `cerrar_incidentes_vencidos()` marcaba el incidente como cerrado (`hora_fin`) antes de confirmar que el PDF se había generado; si `generar_pdf_incidente()` fallaba, quedaba cerrado para siempre sin PDF. Ahora `hora_fin` solo se persiste tras generar el PDF con éxito, con reintento en el próximo ciclo si falla.
@@ -194,10 +196,19 @@ Fase 7: ✅ Completada y probada. Reporte PDF automático por incidente + galer�
 - PDF arrastraba detecciones faciales de horas atrás: `gestionar_incidente()` buscaba TODAS las `AlertaFacial` sin incidente asignado, sin acotar por tiempo. Se acotó a `fecha_deteccion__gte=ahora - INCIDENTE_TIMEOUT_SECONDS`.
 - Diseño del PDF: rediseñado a estética formal (texto 100% negro, logo IRIS a la izquierda desde `static/img/logo.png`, ficha de incidente, ubicación fija vía `settings.INCIDENTE_UBICACION_FIJA` — pendiente reemplazar por geolocalización real, pie de página con numeración).
 
+**Resuelto en esta sesión (rediseño estético del frontend, sin tocar Sección 3):**
+- El HTML/CSS del dashboard (Fases 1-7) se sentía amateur: mezcla de tarjetas claras (`camara-card`, `auth-card`, `form-container`, `qr-card`) y oscuras (`reporte-card`, `alerta`), emojis como iconos, badges en mayúsculas, una sola sombra pesada repetida en todo.
+- Se mantuvo el dark theme con la misma paleta azul (`--color-50..950` sin tocar) pero más sobrio y consistente: todas las tarjetas pasan a una sola superficie oscura (`--surface`), sombras reducidas y jerarquizadas (`--shadow-sm` para tarjetas de grilla, `--shadow-md` solo para lo elevado: auth-card, form-container, stream de cámara, FABs), inputs oscuros consistentes, badges sin uppercase/letter-spacing.
+- Emojis reemplazados por un sprite de iconos SVG (`<symbol>` en `base.html`, usado con `<use>` en el resto de templates) — sin librerías nuevas.
+- Logo del navbar ahora enlaza a `home` (no tenía `<a>`).
+- Se corrigieron dos reglas de `style.css` que habían quedado fuera de cualquier `@media` (`.reportes-container` y `.nav-link`), por lo que siempre aplicaban tamaño de escritorio incluso en mobile — rompía el mobile-first estricto de la Sección 5 en esas dos pantallas.
+- Archivos reemplazados: `static/css/style.css`, `users/templates/users/base.html`, `users/templates/users/home.html`, `users/templates/users/cam.html`, `users/templates/users/alertas.html`, `users/templates/users/reportes.html`.
+- No se tocaron `login.html`, `register.html`, `nueva_camara.html`, `test_model.html` ni `reporte_incidente.html` (no se compartieron en esta sesión), pero heredan el rediseño automáticamente porque no se renombró ninguna clase CSS.
+
 **Problemas conocidos, no bloqueantes:**
 - Al iniciar el stream, a veces aparece brevemente un mensaje de "cámara no operativa" antes de estabilizarse. No grave — pendiente investigar la causa exacta.
 - La detección de armas en vivo a veces pierde fluidez (menos fps aparente). No diagnosticado todavía.
 
-**Sin misión activa definida por ahora** — Fases 1-7 completadas. Identificación de patrones de robo (Sección 1, alcance futuro) sigue sin arquitectura preparada ni fecha; no arrancar sin que el usuario lo pida explícitamente.
+**Sin misión activa definida por ahora** — Fases 1-7 completadas, frontend rediseñado. Identificación de patrones de robo (Sección 1, alcance futuro) sigue sin arquitectura preparada ni fecha; no arrancar sin que el usuario lo pida explícitamente.
 
-CHANGELOG: users/views/detection.py, users/views/reportes_views.py, users/templates/users/reporte_incidente.html, eye/settings.py — Fase 7 cerrada: fix de lag de cámara (CAP_DSHOW + cache de Camera), cierre de incidentes corregido (orden PDF/hora_fin, cierre por desconexión, ventana de facial_pendientes), rediseño formal del PDF con logo y ubicación fija
+CHANGELOG: static/css/style.css, users/templates/users/base.html, users/templates/users/home.html, users/templates/users/cam.html, users/templates/users/alertas.html, users/templates/users/reportes.html — rediseño estético completo a dark theme sobrio: tarjetas unificadas, iconos SVG reemplazando emojis, badges sin mayúsculas, sombras reducidas y jerarquizadas, inputs oscuros consistentes, logo enlazado a home, fix de reglas mobile-first sueltas fuera de @media
