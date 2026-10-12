@@ -1,7 +1,6 @@
 # AI_CONTEXT.md — Proyecto IRIS
 
 > Documento vivo. Se actualiza al final de cada sesión de trabajo con IA, editando solo la Sección 9.
-> Repositorio: https://github.com/Javier9472/IRIS.git
 
 ## 1. Identidad del proyecto
 
@@ -211,4 +210,4 @@ Fase 7: ✅ Completada y probada. Reporte PDF automático por incidente + galer�
 
 **Sin misión activa definida por ahora** — Fases 1-7 completadas, frontend rediseñado. Identificación de patrones de robo (Sección 1, alcance futuro) sigue sin arquitectura preparada ni fecha; no arrancar sin que el usuario lo pida explícitamente.
 
-CHANGELOG: static/css/style.css, users/templates/users/base.html, users/templates/users/home.html, users/templates/users/cam.html, users/templates/users/alertas.html, users/templates/users/reportes.html — rediseño estético completo a dark theme sobrio: tarjetas unificadas, iconos SVG reemplazando emojis, badges sin mayúsculas, sombras reducidas y jerarquizadas, inputs oscuros consistentes, logo enlazado a home, fix de reglas mobile-first sueltas fuera de @media
+CHANGELOG: train.py — DATA_YAML apuntado al dataset v2 (placeholder, pendiente confirmar carpeta real), BASE_MODEL corregido a yolo26m.pt (era yolo11s.pt), fliplr y hsv_s/hsv_v puestos en 0.0 para no duplicar augmentaciones ya aplicadas en Roboflow, RUN_NAME ajustado a yolo26m.
